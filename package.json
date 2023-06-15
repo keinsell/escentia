@@ -14,6 +14,7 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "io-ts": "^2.2.20"
+    "io-ts": "^2.2.20",
+    "typia": "^4.0.9"
   }
 }
