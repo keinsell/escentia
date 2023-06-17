@@ -1,8 +1,8 @@
 import { UniqueIdentifier } from "src/identifiers/unique-identifier"
 import { AggregateRoot } from "./aggregate-root"
 import { Entity } from "./entity"
-import { Event } from "../events/event"
-import { MessagePayload } from "src/messaging/message"
+import { Event } from "../messages/event"
+import { MessagePayload } from "src/messages/message"
 
 type DomainEventPayload<
 	AGGREGATE extends AggregateRoot<Entity<UniqueIdentifier>>

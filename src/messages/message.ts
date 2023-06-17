@@ -70,6 +70,7 @@ export type MessagePayload<T> = Omit<
 
 export abstract class Message<T = unknown> implements MessageProperties {
 	// TODO: How to generate ids and which ID format would be most optimal? Do this should be setup in this abstract on maybe somewhere else like on message construction?
+	public readonly _name: string = kebabSpace(this.constructor.name)
 	public readonly _id: string = "nanoid()"
 	public readonly _causationId?: UniqueIdentifier | undefined
 	public readonly _correlationId?: UniqueIdentifier | undefined

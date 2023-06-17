@@ -1,6 +1,5 @@
 import { kebabSpace } from "src/utilities/kebab-space"
 import { Subscriber } from "./subscriber"
-import { Topic, createTopic } from "../infrastructure/topic"
 import { Broker } from "../infrastructure/broker"
 
 // TODO: Channels are a generic term that refers to the communication pathways through which messages flow between publishers and subscribers in a message broker system. It represents the logical communication paths or destinations for messages. Channels can encompass various types, such as topics, queues, or exchanges, depending on the messaging system or broker being used.
@@ -11,16 +10,25 @@ import { Broker } from "../infrastructure/broker"
 
 // TODO: Exchanges are channels used in the context of message routing and distribution. Publishers send messages to an exchange, which acts as a central point responsible for routing messages to one or more queues based on predefined rules or routing keys. Exchanges allow for flexible and dynamic message routing patterns.
 
+export interface ChannelConfiguration {
+	serialization?: {
+		serializer: any
+		deserializer: any
+	}
+}
+
 /** Channels, also known as topics, queues, or exchanges */
 export abstract class Channel {
-	abstract MessageType: unknown
-	public readonly _name: Topic = createTopic(kebabSpace(this.constructor.name))
+	public readonly _name: string = kebabSpace(this.constructor.name)
 	public readonly _type: ChannelType = ChannelType.DATATYPE
 
-	constructor(private readonly broker: Broker<any>) {}
+	constructor(
+		private readonly broker: Broker<any>,
+		private readonly configuration?: ChannelConfiguration
+	) {}
 
 	async publish(message: unknown): Promise<void> {
-		this.broker.publish(this._name, message)
+		this.broker.publish(this._name, this.serialize(message))
 	}
 
 	async subscribe(subscriber: Subscriber): Promise<void> {
@@ -29,6 +37,16 @@ export abstract class Channel {
 
 	async unsubscribe(subscriber: Subscriber): Promise<void> {
 		this.broker.unsubscribe(this._name, subscriber)
+	}
+
+	private serialize(message: unknown) {
+		let formattedMessage: unknown = message
+
+		if (this.configuration?.serialization) {
+			formattedMessage = this.configuration.serialization.serializer(message)
+		}
+
+		return formattedMessage
 	}
 }
 
