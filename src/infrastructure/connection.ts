@@ -1,16 +1,14 @@
 export abstract class Connection<INSTANCE = unknown> {
-	private  readonly _connectionInstance: INSTANCE;
+	private readonly _connectionInstance: INSTANCE
 
-	constructor(
-	instance: INSTANCE
-	) {
-		this._connectionInstance = instance;
+	constructor(instance: INSTANCE) {
+		this._connectionInstance = instance
 	}
 
-	abstract close(): Promise<void>;
-	abstract connect(): Promise<void>;
+	abstract close(): Promise<void>
+	abstract connect(): Promise<void>
 
 	get instance(): INSTANCE {
-		return this._connectionInstance;
+		return this._connectionInstance
 	}
 }
