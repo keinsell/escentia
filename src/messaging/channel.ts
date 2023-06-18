@@ -1,6 +1,10 @@
-import { kebabSpace } from "src/utilities/kebab-space"
-import { Subscriber } from "./subscriber"
-import { Broker } from "../infrastructure/broker"
+import {MessageScheduling} from "src/messaging/scheduling/message-scheduling";
+import {SchedulingAlgorithm} from "src/messaging/scheduling/scheduling-algorithm";
+import {kebabSpace} from "src/utilities/kebab-space"
+import {Broker} from "../infrastructure/broker"
+import {Message} from "../messages/message";
+import {ChannelType} from "./channels/channel-type";
+import {Subscriber} from "./subscriber"
 
 // TODO: Channels are a generic term that refers to the communication pathways through which messages flow between publishers and subscribers in a message broker system. It represents the logical communication paths or destinations for messages. Channels can encompass various types, such as topics, queues, or exchanges, depending on the messaging system or broker being used.
 
@@ -15,19 +19,28 @@ export interface ChannelConfiguration {
 		serializer: any
 		deserializer: any
 	}
+	schedulingMethod?: SchedulingAlgorithm
+	scheduling?: MessageScheduling
 }
 
 /** Channels, also known as topics, queues, or exchanges */
-export abstract class Channel {
+export abstract class Channel<M extends Message> {
 	public readonly _name: string = kebabSpace(this.constructor.name)
 	public readonly _type: ChannelType = ChannelType.DATATYPE
+	public readonly _schedulingAlgorithm: SchedulingAlgorithm | undefined
 
 	constructor(
-		private readonly broker: Broker<any>,
-		private readonly configuration?: ChannelConfiguration
-	) {}
+		protected readonly broker: Broker<any>,
+		protected readonly configuration?: ChannelConfiguration
+	) {
+		this._schedulingAlgorithm = configuration?.schedulingMethod
 
-	async publish(message: unknown): Promise<void> {
+		if (configuration?.scheduling) {
+			this._schedulingAlgorithm = configuration.scheduling.type
+		}
+	}
+
+	async publish<T extends M>(message: T): Promise<void> {
 		this.broker.publish(this._name, this.serialize(message))
 	}
 
@@ -39,7 +52,7 @@ export abstract class Channel {
 		this.broker.unsubscribe(this._name, subscriber)
 	}
 
-	private serialize(message: unknown) {
+	protected serialize(message: unknown) {
 		let formattedMessage: unknown = message
 
 		if (this.configuration?.serialization) {
@@ -50,11 +63,3 @@ export abstract class Channel {
 	}
 }
 
-export enum ChannelType {
-	POINT_TO_POINT = "POINT_TO_POINT",
-	PUBLISH_SUBSCRIBE = "PUBLISH_SUBSCRIBE",
-	REQUEST_RESPONSE = "REQUEST_RESPONSE",
-	STREAM = "STREAM",
-	DEAD_LETTER = "DEAD_LETTER",
-	DATATYPE = "DATATYPE",
-}

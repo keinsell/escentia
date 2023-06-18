@@ -6,7 +6,9 @@ import { Channel } from "src/messaging/channel";
 import { Subscriber } from "src/messaging/subscriber";
 import { Handler } from "src/messaging/handler";
 import { Broker } from "src/infrastructure/broker";
-import { EventEmitter } from "events"
+import { EventEmitter } from "node:events"
+import {Queue} from "../src/messaging/channels/queue";
+import {FirstInFirstOut} from "../src/messaging/scheduling/first-in-first-out";
 
 interface UserProperties extends ModelProperties<string> {
   email: string
@@ -60,14 +62,11 @@ export class User extends AggregateRoot<UserAccount> {
 
 const userAggregate = new User(userEntity)
 
-userAggregate.changeEmail("keinell@protonmail.com")
-
-export class EventEmitterBroker extends Broker {
+export class EventEmitterBroker extends Broker<EmailChangedChannel> {
   private broker = new EventEmitter()
   private registry = new Map<string, Subscriber>()
 
   override publish(message: unknown): void | Promise<void> {
-    console.log(`Publishing message... ${message}`)
     this.broker.emit("message", message)
   }
 
@@ -75,20 +74,24 @@ export class EventEmitterBroker extends Broker {
     this.broker.emit("acknowledge", message)
   }
 
-  override subscribe(channel: Channel, subscriber: Subscriber): void | Promise<void> {
+  override subscribe(channel: EmailChangedChannel, subscriber: Subscriber): void | Promise<void> {
     this.registry.set(channel.constructor.name, subscriber)
     this.broker.on("message", (message: unknown) => {
       subscriber.handle(message)
     })
   }
 
-  override unsubscribe(channel: Channel, _subscriber: Subscriber): void | Promise<void> {
+  override unsubscribe(channel: EmailChangedChannel, _subscriber: Subscriber): void | Promise<void> {
     this.registry.delete(channel.constructor.name)
   }
 }
 
-export class EmailChangedChannel extends Channel {
-  override MessageType = EmailChanged
+export class EmailChangedChannel extends Queue<EmailChanged> {
+     constructor() {
+        super(new EventEmitterBroker(), {
+          scheduling: new FirstInFirstOut(),
+        })
+    }
 }
 
 export class EmailChangedHandler extends Handler<EmailChanged> {
@@ -101,10 +104,15 @@ const emailChangedSubscriber = new Subscriber(
   new EmailChangedHandler()
 )
 
-const channel = new EmailChangedChannel(new EventEmitterBroker())
+const channel = new EmailChangedChannel()
 
 channel.subscribe(emailChangedSubscriber)
 
-for await (const event of userAggregate.events) {
-  channel.publish(event)
+for (let i = 0; i < 100; i++) {
+  userAggregate.changeEmail("keinell@protonmail.com")
+  for await (const event of userAggregate.events) {
+    channel.publish(event)
+  }
 }
+
+
