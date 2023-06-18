@@ -1,8 +1,8 @@
 import { UniqueIdentifier } from "src/identifiers/unique-identifier"
+import { MessagePayload } from "src/messages/message"
+import { Event } from "../messages/event"
 import { AggregateRoot } from "./aggregate-root"
 import { Entity } from "./entity"
-import { Event } from "../messages/event"
-import { MessagePayload } from "src/messages/message"
 
 type DomainEventPayload<
 	AGGREGATE extends AggregateRoot<Entity<UniqueIdentifier>>
@@ -12,7 +12,10 @@ type DomainEventPayload<
 export class DomainEvent<
 	AGGREGATE extends AggregateRoot<Entity<UniqueIdentifier>>
 > extends Event<DomainEventPayload<AGGREGATE>> {
+	public aggregate: AGGREGATE
+
 	constructor(payload: DomainEventPayload<AGGREGATE>) {
 		super(payload)
+		this.aggregate = payload.aggregate
 	}
 }

@@ -2,16 +2,14 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "module": "NodeNext",
-    "target": "esnext",
+    "target": "ESNext",
     "lib": [
       "esnext",
-      "dom"
     ],
     "strict": true,
     "composite": false,
     "exactOptionalPropertyTypes": true,
     "incremental": true,
-    "importHelpers": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
@@ -40,6 +38,7 @@
       "swc": true,
       "pretty": true
     },
+    "outDir": "dist",
     "include": [
       "src/**/*"
     ],

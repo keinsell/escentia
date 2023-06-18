@@ -1,10 +1,11 @@
-import {MessageScheduling} from "src/messaging/scheduling/message-scheduling";
-import {SchedulingAlgorithm} from "src/messaging/scheduling/scheduling-algorithm";
-import {kebabSpace} from "src/utilities/kebab-space"
-import {Broker} from "../infrastructure/broker"
-import {Message} from "../messages/message";
-import {ChannelType} from "./channels/channel-type";
-import {Subscriber} from "./subscriber"
+import { EventEmitter } from "node:events"
+import { MessageScheduling } from "src/messaging/scheduling/message-scheduling"
+import { SchedulingAlgorithm } from "src/messaging/scheduling/scheduling-algorithm"
+import { kebabSpace } from "src/utilities/kebab-space"
+import { Broker } from "../infrastructure/broker"
+import { Message } from "../messages/message"
+import { ChannelType } from "./channels/channel-type"
+import { Subscriber } from "./subscriber"
 
 // TODO: Channels are a generic term that refers to the communication pathways through which messages flow between publishers and subscribers in a message broker system. It represents the logical communication paths or destinations for messages. Channels can encompass various types, such as topics, queues, or exchanges, depending on the messaging system or broker being used.
 
@@ -24,20 +25,16 @@ export interface ChannelConfiguration {
 }
 
 /** Channels, also known as topics, queues, or exchanges */
-export abstract class Channel<M extends Message> {
+export abstract class Channel<M extends Message> extends EventEmitter {
 	public readonly _name: string = kebabSpace(this.constructor.name)
 	public readonly _type: ChannelType = ChannelType.DATATYPE
-	public readonly _schedulingAlgorithm: SchedulingAlgorithm | undefined
+	protected subscribers: Subscriber[] = []
 
 	constructor(
 		protected readonly broker: Broker<any>,
 		protected readonly configuration?: ChannelConfiguration
 	) {
-		this._schedulingAlgorithm = configuration?.schedulingMethod
-
-		if (configuration?.scheduling) {
-			this._schedulingAlgorithm = configuration.scheduling.type
-		}
+		super()
 	}
 
 	async publish<T extends M>(message: T): Promise<void> {
@@ -45,6 +42,7 @@ export abstract class Channel<M extends Message> {
 	}
 
 	async subscribe(subscriber: Subscriber): Promise<void> {
+		this.subscribers.push(subscriber)
 		this.broker.subscribe(this._name, subscriber)
 	}
 
@@ -62,4 +60,3 @@ export abstract class Channel<M extends Message> {
 		return formattedMessage
 	}
 }
-
