@@ -6,17 +6,18 @@ import {InMemoryQueue} from "src/messaging/channels/point-to-point/point-to-poin
 import {Handler} from "src/messaging/handler";
 import {Subscriber} from "src/messaging/subscriber";
 import {AggregateRoot} from "../src/domain-modeling/aggregate-root";
-import {Entity} from "../src/domain-modeling/entity";
+import {EntityProperties} from "../src/domain-modeling/entity";
+import {SequentialId} from "../src/identifiers/sequential-id/sequential-id";
 import {FirstInFirstOut} from "../src/messaging/scheduling/first-in-first-out";
 
-interface UserProperties extends ModelProperties<string> {
+interface UserModelProperties extends ModelProperties<string> {
 	email: string
 }
 
-export class UserModel extends Model<string> implements UserProperties {
+export class UserModel extends Model<string> implements UserModelProperties {
 	public email: string
 
-	constructor(properties: UserProperties) {
+	constructor(properties: UserModelProperties) {
 		super(properties)
 		this.email = properties.email
 	}
@@ -24,47 +25,31 @@ export class UserModel extends Model<string> implements UserProperties {
 
 const userModel = new UserModel({id: "1", email: "asdf"})
 
-// console.log(userModel)
+console.log(userModel)
 
-export class UserAccount extends Entity<string> {
+export class EmailChanged extends DomainEvent<User> {
+}
+
+export interface UserProperties {
+	email: string
+}
+
+export class User extends AggregateRoot<SequentialId, UserProperties> implements UserProperties {
 	public email: string
 
-	constructor(properties: UserProperties) {
-		super(properties.id)
+	constructor(properties: EntityProperties<SequentialId, UserProperties>) {
+		super(properties)
 		this.email = properties.email
 	}
 
 	public changeEmail(email: string) {
 		this.email = email
-		this.incrementVersion()
-	}
-}
-
-const userEntity = new UserAccount({id: userModel.id, email: userModel.email})
-
-// console.log(userEntity)
-
-export class EmailChanged extends DomainEvent<User> {
-}
-
-export class User extends AggregateRoot<UserAccount> {
-	constructor(root: UserAccount) {
-		super(root)
-	}
-
-	public onEmailChanged(event: EmailChanged) {
-		this.root.changeEmail(event.aggregate.root.email)
-	}
-
-	public changeEmail(email: string) {
-		this.root.changeEmail(email)
 		this.addEvent(new EmailChanged({aggregate: this}))
-		this.onEmailChanged(new EmailChanged({aggregate: this}))
 		return this
 	}
 }
 
-const userAggregate = new User(userEntity)
+const userAggregate = new User({email: "keinsel@protonmail.com"})
 
 export class EventEmitterBroker extends Broker<EmailChangedChannel> {
 	private broker = new EventEmitter()
@@ -109,8 +94,7 @@ const emailChangedSubscriber = new Subscriber(
 )
 
 const channel = new EmailChangedChannel()
-
-channel.subscribe(emailChangedSubscriber)
+await channel.subscribe(emailChangedSubscriber)
 
 for (let i = 0; i < 100; i++) {
 	userAggregate.changeEmail("keinell@protonmail.com")

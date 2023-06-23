@@ -5,7 +5,7 @@ import {SchedulingAlgorithm} from "src/messaging/scheduling/scheduling-algorithm
 export class FirstInFirstOut extends MessageScheduling {
 	public readonly type: SchedulingAlgorithm = SchedulingAlgorithm.FIFO
 
-	public schedule(messages: EnquedObject[]): EnquedObject[] {
+	public schedule<T>(messages: EnquedObject<T>[]): EnquedObject<T>[] {
 		messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
 
 		return messages

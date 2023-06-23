@@ -29,15 +29,6 @@ export class EnquedObject<T = unknown> {
 export abstract class PointToPointChannel<M extends Message> extends Channel<M> {
 	public override _type: ChannelType = ChannelType.POINT_TO_POINT
 
-	override async subscribe(subscriber: Subscriber): Promise<void> {
-		if (this.subscriber) {
-			throw new Error("Queue channels allow only one subscriber at same time.")
-		}
-		return super.subscribe(subscriber);
-	}
-
-	private subscriber: Subscriber | undefined
-
 	constructor(
 		broker: Broker<any>,
 		configuration?: ChannelConfiguration
@@ -45,9 +36,17 @@ export abstract class PointToPointChannel<M extends Message> extends Channel<M> 
 		super(broker, configuration)
 	}
 
+	override async subscribe(subscriber: Subscriber): Promise<void> {
+		if (this.subscribers.length > 0) {
+			throw new Error("Queue channels allow only one subscriber at same time.")
+		}
+		this.subscribers.push(subscriber)
+		this.broker.subscribe(this._name, subscriber)
+	}
+
 	abstract enqueue<T extends M>(message: T, priority?: Priority): void | Promise<void>
 
-	abstract dequeue(): M | Promise<M>
+	abstract dequeue(): M[] | Promise<M[]>
 }
 
 export class InMemoryQueue<M extends Message> extends PointToPointChannel<M> {
@@ -59,19 +58,33 @@ export class InMemoryQueue<M extends Message> extends PointToPointChannel<M> {
 	) {
 		super(broker, configuration)
 
-		this.on("enqueued", (m: EnquedObject<M>) => {
-			this.dequeue()
+		this.on(`${this.constructor.name}-enqueued`, async (m: EnquedObject<M>) => {
+			console.log(`Queued ${m.message._name}`, m.id)
+			this.queue = new FirstInFirstOut().schedule(this.queue)
+			const batch = this.dequeue()
+
+			for (const event of batch) {
+				await this.publish(event)
+			}
 		})
 	}
 
-	public enqueue<T>(message: T, priority: Priority = Priority.NONE): void | Promise<void> {
+	public enqueue<T extends M>(message: T, priority: Priority = Priority.NONE): void | Promise<void> {
 		const queueMessage = new EnquedObject(randomUUID(), message, priority)
 		this.queue.push(queueMessage)
-		this.emit("enqueued", queueMessage)
+		this.emit(`${this.constructor.name}-enqueued`, queueMessage)
 	}
 
 	public dequeue(): M[] {
-		this.queue = new FirstInFirstOut().schedule(this.queue)
-		return this.queue.map(e => e.message)
+		const batch: M[] = []
+
+		while (this.queue.length > 0) {
+			const message = this.queue.shift()
+			if (message) {
+				batch.push(message.message)
+			}
+		}
+
+		return batch
 	}
 }

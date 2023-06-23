@@ -1,37 +1,22 @@
-import {
-	SequentialId,
-	sequentialId,
-} from "src/identifiers/sequential-id/sequential-id"
-import { UniqueIdentifier } from "../identifiers/unique-identifier"
-import { DomainEvent } from "./domain-event"
-import { Entity } from "./entity"
+import {UniqueIdentifier} from "../identifiers/unique-identifier"
+import {DomainEvent} from "./domain-event"
+import {Entity, EntityProperties} from "./entity"
 
-export abstract class AggregateRoot<ENTITY extends Entity<UniqueIdentifier>> {
-	protected readonly _id: ENTITY["_id"]
-	protected root: ENTITY
-
-	protected constructor(root: ENTITY, version?: SequentialId) {
-		this._id = root._id
-		this.__version = version || sequentialId(0)
-		this.root = root
+export abstract class AggregateRoot<ID extends UniqueIdentifier = UniqueIdentifier, PROPERTIES = {}> extends Entity<ID> {
+	protected constructor(properties: EntityProperties<ID, PROPERTIES>) {
+		super(properties)
 	}
 
-	protected __version: SequentialId
+	private __events: DomainEvent<AggregateRoot<ID, PROPERTIES>>[] = []
 
-	public get _version(): SequentialId {
-		return this.__version
-	}
-
-	private __events: DomainEvent<AggregateRoot<ENTITY>>[] = []
-
-	get _events(): DomainEvent<AggregateRoot<ENTITY>>[] {
+	get _events(): DomainEvent<AggregateRoot<ID, PROPERTIES>>[] {
 		return this.__events
 	}
 
-	public addEvent<T extends DomainEvent<AggregateRoot<ENTITY>>>(
+	public addEvent<T extends DomainEvent<AggregateRoot<ID, PROPERTIES>>>(
 		event: T
 	): void {
-		this.__version++
+		this.incrementVersion()
 		this.__events.push(event)
 	}
 }
