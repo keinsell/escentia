@@ -1,5 +1,7 @@
-import { Message, MessageType } from "./message"
+import {Message, MessagePayload, MessageType} from "./message"
 
 export abstract class Command<T = unknown> extends Message<T> {
-	public override _type: MessageType = MessageType.COMMAND
+	constructor(properties: MessagePayload<T>) {
+		super(properties, MessageType.COMMAND)
+	}
 }

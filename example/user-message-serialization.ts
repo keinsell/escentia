@@ -1,18 +1,18 @@
 import "reflect-metadata";
-import { EventEmitter } from "node:events"
-import { Model, ModelProperties } from "src/data-modeling/model"
-import { DomainEvent } from "src/domain-modeling/domain-event";
-import { Broker } from "src/infrastructure/broker";
-import { InMemoryQueue } from "src/messaging/channels/point-to-point/point-to-point-channel";
-import { Handler } from "src/messaging/handler";
-import { Subscriber } from "src/messaging/subscriber";
-import { AggregateRoot } from "../src/domain-modeling/aggregate-root";
-import { EntityProperties } from "../src/domain-modeling/entity";
-import { SequentialId } from "../src/identifiers/sequential-id/sequential-id";
-import { FirstInFirstOut } from "../src/messaging/scheduling/first-in-first-out";
-import { JSONMessageSerializer } from "src/messaging/serializer/message-serializer";
-import { JsonMessageDeserializer } from "src/messaging/serializer/message-deserializer";
-import { RegisterMessage } from "src/messaging/serializer/message-registry";
+import {EventEmitter} from "node:events"
+import {Model, ModelProperties} from "src/data-modeling/model"
+import {DomainEvent} from "src/domain-modeling/domain-event";
+import {Broker} from "src/infrastructure/broker";
+import {InMemoryQueue} from "src/messaging/channels/point-to-point/point-to-point-channel";
+import {Handler} from "src/messaging/handler";
+import {Subscriber} from "src/messaging/subscriber";
+import {AggregateRoot} from "../src/domain-modeling/aggregate-root";
+import {EntityProperties} from "../src/domain-modeling/entity";
+import {SequentialId} from "../src/identifiers/sequential-id/sequential-id";
+import {FirstInFirstOut} from "../src/messaging/scheduling/first-in-first-out";
+import {JSONMessageSerializer} from "src/messaging/serializer/message-serializer";
+import {JsonMessageDeserializer} from "src/messaging/serializer/message-deserializer";
+import {RegisterMessage} from "src/messaging/serializer/message-registry";
 
 interface UserModelProperties extends ModelProperties<string> {
   email: string
@@ -31,7 +31,7 @@ const userModel = new UserModel({ id: "1", email: "asdf" })
 
 console.log(userModel)
 
-@RegisterMessage('email-changed')
+@RegisterMessage()
 export class EmailChanged extends DomainEvent<User> {
 }
 
@@ -112,6 +112,7 @@ await channel.subscribe(emailChangedSubscriber)
 
 userAggregate.changeEmail("keinell@protonmail.com")
 const event = await userAggregate._events[0] as EmailChanged
+console.log(event)
 const serialized = new JSONMessageSerializer().serialize(event)
 console.log(serialized)
 const deserialized = new JsonMessageDeserializer().deserialize(serialized)
