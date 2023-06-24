@@ -1,11 +1,9 @@
-import { Message } from "src/messages/message";
-import { MessageRegistry } from "./message-registry";
-import { Command } from "src/messages/command";
+import {Message} from "src/messages/message";
+import {MessageRegistry} from "./message-registry";
 
 export abstract class MessageDeserializer<T = unknown> {
   abstract deserialize<P>(message: T): Message<P>;
 }
-
 
 export class JsonMessageDeserializer extends MessageDeserializer<string> {
   deserialize<P>(message: string): Message<P> {

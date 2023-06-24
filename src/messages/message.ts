@@ -1,6 +1,6 @@
-import { UniqueIdentifier } from "src/identifiers/unique-identifier"
-import { SerializableProperty } from "src/messaging/serializer/serializable-property"
-import { kebabSpace } from "src/utilities/kebab-space"
+import {UniqueIdentifier} from "src/identifiers/unique-identifier"
+import {SerializableProperty} from "src/messaging/serializer/serializable-property"
+import {kebabSpace} from "src/utilities/kebab-space"
 
 export enum MessageType {
   /**
@@ -23,6 +23,7 @@ export enum MessageType {
    * @see [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html)
    */
   REPLY = "REPLY",
+  QUERY = "QUERY",
 }
 
 /**
@@ -91,14 +92,14 @@ export abstract class Message<T = unknown> implements MessageProperties {
   @SerializableProperty()
   public readonly _metadata?: Record<string, unknown> | undefined
 
-  constructor(message?: MessagePayload<T>) {
-    Object.assign(this, message)
-    this._causationId = message?._causationId
-    this._correlationId = message?._correlationId
-    this._headers = message?._headers ?? {
+  constructor(message: MessagePayload<T>, type: MessageType = MessageType.DOCUMENT) {
+    this._causationId = message._causationId
+    this._correlationId = message._correlationId
+    this._headers = message._headers ?? {
       "content-type": "application/json",
     }
-    this._metadata = message?._metadata ?? {
+    this._type = type
+    this._metadata = message._metadata ?? {
       "id": this._id as string,
       "name": this._name as string,
       "type": this._type as string,
@@ -106,6 +107,7 @@ export abstract class Message<T = unknown> implements MessageProperties {
       "causation-id": this._causationId as string,
       "timestamp": this._timestamp.toISOString(),
     }
+    Object.assign(this, message)
   }
 
   /** Gets the kebab-cased name of the message class. */
