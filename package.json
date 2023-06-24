@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "io-ts": "^2.2.20",
+    "reflect-metadata": "^0.1.13",
     "typia": "^4.0.9"
   }
 }
