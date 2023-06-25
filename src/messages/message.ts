@@ -1,6 +1,7 @@
-import {UniqueIdentifier} from "src/identifiers/unique-identifier"
-import {SerializableProperty} from "src/messaging/serializer/serializable-property"
-import {kebabSpace} from "src/utilities/kebab-space"
+import { UniqueIdentifier } from "src/identifiers/unique-identifier"
+import { Priority } from "src/messages/priority"
+import { SerializableProperty } from "src/messaging/serializer/serializable-property"
+import { kebabSpace } from "src/utilities/kebab-space"
 
 export enum MessageType {
   /**
@@ -56,6 +57,7 @@ interface MessageProperties {
   readonly _correlationId?: UniqueIdentifier | undefined
   readonly _timestamp: Date
   readonly _type: MessageType
+  readonly _priority?: Priority
   readonly _headers?: Record<string, unknown> | undefined
   readonly _metadata?: Record<string, unknown> | undefined
 }
@@ -86,6 +88,8 @@ export abstract class Message<T = unknown> implements MessageProperties {
   @SerializableProperty()
   public readonly _type: MessageType = MessageType.DOCUMENT
   @SerializableProperty()
+  public readonly _priority: Priority = Priority.NONE
+  @SerializableProperty()
   public readonly _timestamp: Date = new Date()
   @SerializableProperty()
   public readonly _headers?: Record<string, unknown> | undefined
@@ -99,6 +103,7 @@ export abstract class Message<T = unknown> implements MessageProperties {
       "content-type": "application/json",
     }
     this._type = type
+    this._priority = message._priority ?? Priority.NONE
     this._metadata = message._metadata ?? {
       "id": this._id as string,
       "name": this._name as string,
@@ -106,6 +111,7 @@ export abstract class Message<T = unknown> implements MessageProperties {
       "correlation-id": this._correlationId as string,
       "causation-id": this._causationId as string,
       "timestamp": this._timestamp.toISOString(),
+      "priority": this._priority as string,
     }
     Object.assign(this, message)
   }

@@ -1,7 +1,7 @@
-import {SerializableProperty} from "src/messaging/serializer/serializable-property";
-import {Message, MessageType} from "./message";
-import {DigestCalculator} from "src/crypto/digest-calculator";
-import {Crc32Checksum} from "src/crypto/checksum/crc32-checksum";
+import { SerializableProperty } from "src/messaging/serializer/serializable-property";
+import { Message, MessageType } from "./message";
+import { DigestCalculator } from "src/crypto/digest-calculator";
+import { Crc32Checksum } from "src/crypto/checksum/crc32-checksum";
 
 export type QueryProperties<T> = {
   filters?: any;
