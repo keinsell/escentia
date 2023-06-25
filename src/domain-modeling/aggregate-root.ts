@@ -1,8 +1,11 @@
-import {UniqueIdentifier} from "../identifiers/unique-identifier"
-import {DomainEvent} from "./domain-event"
-import {Entity, EntityProperties} from "./entity"
+import { UniqueIdentifier } from "../identifiers/unique-identifier"
+import { DomainEvent } from "./domain-event"
+import { Entity, EntityProperties } from "./entity"
 
-export abstract class AggregateRoot<ID extends UniqueIdentifier = UniqueIdentifier, PROPERTIES = {}> extends Entity<ID> {
+export abstract class AggregateRoot<
+	ID extends UniqueIdentifier = UniqueIdentifier,
+	PROPERTIES = {}
+> extends Entity<ID> {
 	protected constructor(properties: EntityProperties<ID, PROPERTIES>) {
 		super(properties)
 	}

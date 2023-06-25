@@ -1,15 +1,14 @@
 import "reflect-metadata";
-import { EventEmitter } from "node:events"
-import { Model, ModelProperties } from "src/data-modeling/model"
-import { DomainEvent } from "src/domain-modeling/domain-event";
-import { Broker } from "src/infrastructure/broker";
-import { InMemoryQueue } from "src/messaging/channels/point-to-point/point-to-point-channel";
-import { Handler } from "src/messaging/handler";
-import { Subscriber } from "src/messaging/subscriber";
-import { AggregateRoot } from "../src/domain-modeling/aggregate-root";
-import { EntityProperties } from "../src/domain-modeling/entity";
-import { SequentialId } from "../src/identifiers/sequential-id/sequential-id";
-import { FirstInFirstOut } from "../src/messaging/scheduling/first-in-first-out";
+import {EventEmitter} from "node:events"
+import {Model, ModelProperties} from "src/data-modeling/model"
+import {DomainEvent} from "src/domain-modeling/domain-event";
+import {Broker} from "src/infrastructure/broker";
+import {InMemoryPointToPointChannel} from "src/messaging/channels/point-to-point/point-to-point-channel";
+import {Handler} from "src/messaging/handler";
+import {Subscriber} from "src/messaging/subscriber";
+import {AggregateRoot} from "../src/domain-modeling/aggregate-root";
+import {EntityProperties} from "../src/domain-modeling/entity";
+import {SequentialId} from "../src/identifiers/sequential-id/sequential-id";
 
 interface UserModelProperties extends ModelProperties<string> {
   email: string
@@ -76,11 +75,9 @@ export class EventEmitterBroker extends Broker<EmailChangedChannel> {
   }
 }
 
-export class EmailChangedChannel extends InMemoryQueue<EmailChanged> {
+export class EmailChangedChannel extends InMemoryPointToPointChannel<EmailChanged> {
   constructor() {
-    super(new EventEmitterBroker(), {
-      scheduling: new FirstInFirstOut(),
-    })
+    super(new EventEmitterBroker())
   }
 }
 
@@ -102,6 +99,6 @@ await channel.subscribe(emailChangedSubscriber)
 for (let i = 0; i < 100; i++) {
   userAggregate.changeEmail("keinell@protonmail.com")
   for await (const event of userAggregate._events) {
-    channel.enqueue(event)
+    channel.enqueue(event as EmailChanged)
   }
 }

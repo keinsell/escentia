@@ -1,4 +1,4 @@
-import {Message, MessagePayload, MessageType} from "./message"
+import { Message, MessagePayload, MessageType } from "./message"
 
 export abstract class Command<T = unknown> extends Message<T> {
 	constructor(properties: MessagePayload<T>) {
