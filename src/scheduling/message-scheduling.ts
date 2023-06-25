@@ -1,8 +1,8 @@
-import {SchedulingAlgorithm} from "src/scheduling/scheduling-algorithm";
-import {QueuePosition} from "./queue";
+import { SchedulingAlgorithm } from "src/scheduling/scheduling-algorithm"
+import { QueuePosition } from "./queue"
 
 export abstract class MessageScheduling {
-  abstract readonly type: SchedulingAlgorithm
+	abstract readonly type: SchedulingAlgorithm
 
-  abstract schedule<T>(messages: QueuePosition<T>[]): QueuePosition<T>[]
+	abstract schedule<T>(messages: QueuePosition<T>[]): QueuePosition<T>[]
 }

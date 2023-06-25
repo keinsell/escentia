@@ -1,7 +1,13 @@
-import {SequentialId, sequentialId,} from "src/identifiers/sequential-id/sequential-id"
-import {UniqueIdentifier} from "../identifiers/unique-identifier"
+import {
+	SequentialId,
+	sequentialId,
+} from "src/identifiers/sequential-id/sequential-id"
+import { UniqueIdentifier } from "../identifiers/unique-identifier"
 
-export type EntityProperties<ID extends UniqueIdentifier = UniqueIdentifier, PROPERTIES = {}> = { id?: ID, version?: SequentialId } & PROPERTIES
+export type EntityProperties<
+	ID extends UniqueIdentifier = UniqueIdentifier,
+	PROPERTIES = {}
+> = { id?: ID; version?: SequentialId } & PROPERTIES
 
 export abstract class Entity<ID extends UniqueIdentifier, PROPERTIES = {}> {
 	public readonly _entity: string = this.constructor.name.endsWith("Entity")
