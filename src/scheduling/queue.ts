@@ -1,6 +1,6 @@
-import { Store } from "../infrastructure/store"
-import { MessageScheduling } from "src/scheduling/message-scheduling"
-import { Priority } from "src/messages/priority"
+import {Priority} from "src/messages/priority"
+import {MessageScheduling} from "src/scheduling/message-scheduling"
+import {Store} from "../infrastructure/store"
 
 export interface QueuePosition<T> {
 	id: string
@@ -41,21 +41,3 @@ export abstract class Queue<T = unknown> {
 
 	abstract size(): Promise<number>
 }
-
-// export class InMemoryPointToPointChannel<T = unknown> extends Queue<T> {
-//   constructor() {  }
-
-//   public async enqueue(object: T, details?: Partial<Omit<QueuePosition<T>, "id" | "timestamp" | "message">>) {
-//     const queueItem: QueuePosition<T> = this.createQueueItem(object, details)
-//     this.store.set(queueItem.id, queueItem)
-//   }
-
-//   private createQueueItem<T>(object: T, details: Partial<Omit<QueuePosition<T>, "id" | "timestamp" | "message">> | undefined): QueuePosition<T> {
-//     return {
-//       id: randomUUID(),
-//       timestamp: new Date(),
-//       message: object,
-//       ...details
-//     } as QueuePosition<T>
-//   }
-// }
