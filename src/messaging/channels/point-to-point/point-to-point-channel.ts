@@ -39,7 +39,7 @@ export class InMemoryPointToPointChannel<M extends Message> extends PointToPoint
     if (!this.queue) {
       throw new Error('Queue is not initialized')
     }
-    await this.queue.enqueue(message, { priority: message._priority })
+    await this.queue.enqueue(message, { priority: message.priority })
   }
 
   public async dequeue(): Promise<M[]> {

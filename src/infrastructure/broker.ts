@@ -33,7 +33,7 @@ export abstract class Broker<
 	abstract publish<C extends Channels>(
 		channel: C,
 		message: unknown,
-		config?: { metadata: Message["_metadata"], headers: Message["_headers"] }
+		config?: { metadata: Message["metadata"], headers: Message["headers"] }
 	): Promise<void> | void
 
 	abstract acknowledge(message: unknown): Promise<void> | void

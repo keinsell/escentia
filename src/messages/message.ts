@@ -25,7 +25,6 @@ export enum MessageType {
 	 * @see [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html)
 	 */
 	REPLY = "REPLY",
-	QUERY = "QUERY",
 }
 
 /**
@@ -34,7 +33,7 @@ export enum MessageType {
  * architecture.
  */
 interface MessageProperties {
-	readonly _id: UniqueIdentifier
+	readonly id: UniqueIdentifier
 	/** ﻿`causationId` is an identifier used in event-driven architectures to track
 	 * the causal relationship between events. It represents the ID of the event that
 	 * caused the current event to occur. This can be useful for tracing and debugging
@@ -44,7 +43,7 @@ interface MessageProperties {
 	 * @see [RailsEventStore](https://railseventstore.org/docs/v2/correlation_causation/)
 	 * @see [thenativeweb/commands-events/#1](https://github.com/thenativeweb/commands-events/issues/1#issuecomment-385862281)
 	 */
-	readonly _causationId?: UniqueIdentifier | undefined
+	readonly causationId?: UniqueIdentifier | undefined
 	/** A correlation ID is a unique identifier used to correlate and track a
 	 * specific transaction or event as it moves through a distributed system or
 	 * across different components. It helps to trace the flow of a request and
@@ -55,23 +54,24 @@ interface MessageProperties {
 	 * @see [RailsEventStore](https://railseventstore.org/docs/v2/correlation_causation/)
 	 * @see [thenativeweb/commands-events/#1](https://github.com/thenativeweb/commands-events/issues/1#issuecomment-385862281)
 	 */
-	readonly _correlationId?: UniqueIdentifier | undefined
-	readonly _timestamp: Date
-	readonly _type: MessageType
-	readonly _priority?: Priority
-	readonly _headers?: Record<string, unknown> | undefined
-	readonly _metadata?: Record<string, unknown> | undefined
+	readonly correlationId?: UniqueIdentifier | undefined
+	readonly timestamp: Date
+	readonly type: MessageType
+	readonly priority?: Priority
+	readonly headers?: Record<string, unknown> | undefined
+	readonly metadata?: Record<string, unknown> | undefined
+	readonly body?: unknown
 }
 
 export type MessagePayload<T> = Omit<
 	MessageProperties,
 	/** Maybe for reconstruction purposes we may need that, actually will keep this omited. */
-	| "_id"
+	| "id"
 	/** Changing a type of message is not a action that we would like to take in constructor I think. */
-	| "_type"
-	| "_timestamp"
+	| "type"
+	| "timestamp"
 > &
-	T
+	{body: T}
 
 
 
@@ -80,42 +80,45 @@ export abstract class Message<T = unknown> implements MessageProperties {
 	@Serializable()
 	public readonly _name: string = MessageUtilities.createMessageName(this.constructor.name)
 	@Serializable()
-	public readonly _id: UniqueIdentifier = sequentialId()
+	public readonly id: UniqueIdentifier = sequentialId()
 	@Serializable()
-	public readonly _causationId?: UniqueIdentifier | undefined
+	public readonly causationId?: UniqueIdentifier | undefined
 	@Serializable()
-	public readonly _correlationId?: UniqueIdentifier | undefined
+	public readonly correlationId?: UniqueIdentifier | undefined
 	@Serializable()
-	public readonly _type: MessageType = MessageType.DOCUMENT
+	public readonly type: MessageType = MessageType.DOCUMENT
 	@Serializable()
-	public readonly _priority: Priority = Priority.NONE
+	public readonly priority: Priority = Priority.NONE
 	@Serializable()
-	public readonly _timestamp: Date = new Date()
+	public readonly timestamp: Date = new Date()
 	@Serializable()
-	public readonly _headers?: Record<string, unknown> | undefined
+	public readonly headers?: Record<string, unknown> | undefined
 	@Serializable()
-	public readonly _metadata?: Record<string, unknown> | undefined
+	public readonly metadata?: Record<string, unknown> | undefined
+	@Serializable()
+	public readonly body?: T
 
 	protected constructor(
 		message: MessagePayload<T>,
 		type: MessageType = MessageType.DOCUMENT
 	) {
-		this._causationId = message._causationId
-		this._correlationId = message._correlationId
-		this._headers = message._headers ?? {
+		this.causationId = message.causationId
+		this.correlationId = message.correlationId
+		this.headers = message.headers ?? {
 			"content-type": "application/json",
 		}
-		this._type = type
-		this._priority = message._priority ?? Priority.NONE
-		this._metadata = message._metadata ?? {
-			id: this._id as string,
+		this.type = type
+		this.priority = message.priority ?? Priority.NONE
+		this.metadata = message.metadata ?? {
+			id: this.id as string,
 			name: this._name as string,
-			type: this._type as string,
-			"correlation-id": this._correlationId as string,
-			"causation-id": this._causationId as string,
-			timestamp: this._timestamp.toISOString(),
-			priority: this._priority as string,
+			type: this.type as string,
+			"correlation-id": this.correlationId as string,
+			"causation-id": this.causationId as string,
+			timestamp: this.timestamp.toISOString(),
+			priority: this.priority as string,
 		}
+		this.body = message.body
 		Object.assign(this, message)
 	}
 }
