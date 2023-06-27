@@ -12,8 +12,8 @@ export type PointToPointChannelConfiguration = ChannelConfiguration
 export abstract class PointToPointChannel<M extends Message> extends Channel<M> {
   public override _type: ChannelType = ChannelType.POINT_TO_POINT
 
-  constructor(
-    broker: Broker<any>,
+  protected constructor(
+    broker: Broker<PointToPointChannel<M>>,
     configuration?: PointToPointChannelConfiguration
   ) {
     super(broker, { ...configuration, maxListeners: 1 })

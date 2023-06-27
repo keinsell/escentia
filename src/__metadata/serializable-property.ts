@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
-export const SerializablePropertyKey = Symbol("SerializableProperty");
+export const SerializablePropertyKey = Symbol("Serializable");
 
-export function SerializableProperty() {
+export function Serializable() {
   return function(target: any, propertyKey: string) {
     let existingSerializableProperties: string[] = Reflect.getMetadata(SerializablePropertyKey, target);
 

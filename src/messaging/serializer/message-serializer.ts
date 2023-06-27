@@ -1,5 +1,5 @@
-import { Message } from "src/messages/message";
-import { SerializablePropertyKey } from "./serializable-property";
+import {Message} from "src/messages/message";
+import {SerializablePropertyKey} from "../../__metadata/serializable-property";
 
 export abstract class MessageSerializer<T = unknown> {
   abstract serialize(message: Message): T;

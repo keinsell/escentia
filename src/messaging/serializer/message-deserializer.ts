@@ -1,5 +1,6 @@
 import {Message} from "src/messages/message";
-import {MessageRegistry} from "./message-registry";
+import {MessageRegistryStorage} from "../../__metadata/message-registry";
+
 
 export abstract class MessageDeserializer<T = unknown> {
   abstract deserialize<P>(message: T): Message<P>;
@@ -9,7 +10,7 @@ export class JsonMessageDeserializer extends MessageDeserializer<string> {
   deserialize<P>(message: string): Message<P> {
     const jsonObject = JSON.parse(message);
     const messageType = jsonObject._name;
-    const messageConstructor = MessageRegistry.get(messageType);
+    const messageConstructor = MessageRegistryStorage.get(messageType);
 
     if (!messageConstructor) {
       throw new Error(`Unknown message type: ${messageType}`);

@@ -1,8 +1,8 @@
-import { Query } from "src/messages/query"
-import { RegisterMessage } from "src/messaging/serializer/message-registry"
-import { JSONMessageSerializer } from "src/messaging/serializer/message-serializer"
+import {Query} from "src/messages/query"
+import {JSONMessageSerializer} from "src/messaging/serializer/message-serializer"
+import {SerializableMessage} from "../src/__metadata/message-registry";
 
-@RegisterMessage("get-user-query")
+@SerializableMessage()
 export class GetUserQuery extends Query<{ id: string }, { id: string }> {
 }
 
