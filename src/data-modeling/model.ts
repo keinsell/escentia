@@ -1,4 +1,4 @@
-import { UniqueIdentifier } from "../identifiers/unique-identifier"
+import {UniqueIdentifier} from "../identifiers/unique-identifier"
 
 export interface ModelProperties<ID extends UniqueIdentifier> {
 	readonly id: ID
@@ -6,7 +6,7 @@ export interface ModelProperties<ID extends UniqueIdentifier> {
 
 // TODO: This approach will not be compatible with `typeorm` potentially.
 // TypeORM would like to have a @PrimaryColumn() decorator on the ID field.
-export abstract class Model<ID extends UniqueIdentifier> {
+export abstract class Model<ID extends UniqueIdentifier = UniqueIdentifier> {
 	public readonly _model: string = this.constructor.name.endsWith("Model")
 		? this.constructor.name.slice(0, -5).toLowerCase()
 		: this.constructor.name.toLowerCase()

@@ -1,17 +1,17 @@
-import "reflect-metadata";
 import {EventEmitter} from "node:events"
+import "reflect-metadata";
 import {Model, ModelProperties} from "src/data-modeling/model"
 import {DomainEvent} from "src/domain-modeling/domain-event";
 import {Broker} from "src/infrastructure/broker";
 import {InMemoryPointToPointChannel} from "src/messaging/channels/point-to-point/point-to-point-channel";
 import {Handler} from "src/messaging/handler";
+import {JsonMessageDeserializer} from "src/messaging/serializer/message-deserializer";
+import {JSONMessageSerializer} from "src/messaging/serializer/message-serializer";
 import {Subscriber} from "src/messaging/subscriber";
+import {SerializableMessage} from "../src/__metadata/message-registry";
 import {AggregateRoot} from "../src/domain-modeling/aggregate-root";
 import {EntityProperties} from "../src/domain-modeling/entity";
 import {SequentialId} from "../src/identifiers/sequential-id/sequential-id";
-import {JSONMessageSerializer} from "src/messaging/serializer/message-serializer";
-import {JsonMessageDeserializer} from "src/messaging/serializer/message-deserializer";
-import {RegisterMessage} from "src/messaging/serializer/message-registry";
 
 interface UserModelProperties extends ModelProperties<string> {
   email: string
@@ -30,7 +30,7 @@ const userModel = new UserModel({ id: "1", email: "asdf" })
 
 console.log(userModel)
 
-@RegisterMessage()
+@SerializableMessage()
 export class EmailChanged extends DomainEvent<User> {
 }
 

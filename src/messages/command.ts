@@ -1,7 +1,13 @@
-import { Message, MessagePayload, MessageType } from "./message"
+import {Message, MessagePayload, MessageType} from "./message"
 
+export type CommandPayload<T = unknown> = MessagePayload<T>
+/**
+  * A command is a message that is sent to a single recipient.
+  *
+ *  ![](https://www.enterpriseintegrationpatterns.com/img/CommandMessageSolution.gif)
+*/
 export abstract class Command<T = unknown> extends Message<T> {
-	constructor(properties: MessagePayload<T>) {
-		super(properties, MessageType.COMMAND)
-	}
+  protected constructor(properties: CommandPayload<T>) {
+    super(properties, MessageType.COMMAND)
+  }
 }

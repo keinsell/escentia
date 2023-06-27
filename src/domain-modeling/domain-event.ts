@@ -1,7 +1,7 @@
-import { MessagePayload } from "src/messages/message"
-import { Event } from "../messages/event"
-import { AggregateRoot } from "./aggregate-root"
-import { SerializableProperty } from "src/messaging/serializer/serializable-property"
+import {Serializable} from "src/__metadata/serializable-property"
+import {MessagePayload} from "src/messages/message"
+import {Event} from "../messages/event"
+import {AggregateRoot} from "./aggregate-root"
 
 export type DomainEventPayload<AGGREGATE extends AggregateRoot> =
 	MessagePayload<{ aggregate: AGGREGATE }>
@@ -10,7 +10,7 @@ export type DomainEventPayload<AGGREGATE extends AggregateRoot> =
 export class DomainEvent<AGGREGATE extends AggregateRoot> extends Event<
 	DomainEventPayload<AGGREGATE>
 > {
-	@SerializableProperty()
+	@Serializable()
 	public aggregate: AGGREGATE
 
 	constructor(payload: DomainEventPayload<AGGREGATE>) {

@@ -1,7 +1,8 @@
-import { UniqueIdentifier } from "src/identifiers/unique-identifier"
-import { Priority } from "src/messages/priority"
-import { SerializableProperty } from "src/messaging/serializer/serializable-property"
-import { kebabSpace } from "src/utilities/kebab-space"
+import {Serializable} from "src/__metadata/serializable-property"
+import {UniqueIdentifier} from "src/identifiers/unique-identifier"
+import {Priority} from "src/messages/priority"
+import {kebabSpace} from "src/utilities/kebab-space"
+import {sequentialId} from "../identifiers";
 
 export enum MessageType {
 	/**
@@ -72,31 +73,30 @@ export type MessagePayload<T> = Omit<
 > &
 	T
 
-// TODO: Remove this
-let lastId = 0
+
 
 export abstract class Message<T = unknown> implements MessageProperties {
 	// TODO: How to generate ids and which ID format would be most optimal? Do this should be setup in this abstract on maybe somewhere else like on message construction?
-	@SerializableProperty()
-	public readonly _name: string = kebabSpace(this.constructor.name)
-	@SerializableProperty()
-	public readonly _id: UniqueIdentifier = lastId++
-	@SerializableProperty()
+	@Serializable()
+	public readonly _name: string = MessageUtilities.createMessageName(this.constructor.name)
+	@Serializable()
+	public readonly _id: UniqueIdentifier = sequentialId()
+	@Serializable()
 	public readonly _causationId?: UniqueIdentifier | undefined
-	@SerializableProperty()
+	@Serializable()
 	public readonly _correlationId?: UniqueIdentifier | undefined
-	@SerializableProperty()
+	@Serializable()
 	public readonly _type: MessageType = MessageType.DOCUMENT
-	@SerializableProperty()
+	@Serializable()
 	public readonly _priority: Priority = Priority.NONE
-	@SerializableProperty()
+	@Serializable()
 	public readonly _timestamp: Date = new Date()
-	@SerializableProperty()
+	@Serializable()
 	public readonly _headers?: Record<string, unknown> | undefined
-	@SerializableProperty()
+	@Serializable()
 	public readonly _metadata?: Record<string, unknown> | undefined
 
-	constructor(
+	protected constructor(
 		message: MessagePayload<T>,
 		type: MessageType = MessageType.DOCUMENT
 	) {
@@ -118,9 +118,18 @@ export abstract class Message<T = unknown> implements MessageProperties {
 		}
 		Object.assign(this, message)
 	}
+}
 
-	/** Gets the kebab-cased name of the message class. */
-	static get _name(): string {
-		return kebabSpace(this.constructor.name)
+export class MessageUtilities {
+	static createMessageName(name: string): string {
+		const commonSuffix = ["Query", "Command", "Event"]
+
+		for (const suffix of commonSuffix) {
+			if (name.endsWith(suffix)) {
+				return name.slice(0, -suffix.length)
+			}
+		}
+
+		return kebabSpace(name)
 	}
 }
