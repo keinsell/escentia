@@ -1,4 +1,4 @@
-import {Message, MessagePayload, MessageType} from "src/messages/message"
+import { Message, MessagePayload, MessageType } from "src/messages/message"
 
 export type EventPayload<T = unknown> = MessagePayload<T>
 

@@ -1,3 +1,3 @@
 export enum IdentifierType {
-    SEQUENTIAL_ID = "SequentialId",
+	SEQUENTIAL_ID = "SequentialId",
 }

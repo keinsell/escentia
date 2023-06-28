@@ -1,4 +1,4 @@
-import {Checksum} from "./checksum";
+import { Checksum } from "./checksum"
 
 export abstract class DigestCalculator {
 	abstract checksum(buffer: Buffer): Checksum

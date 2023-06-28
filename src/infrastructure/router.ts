@@ -1,7 +1,7 @@
 import { Message } from "src/messages/message"
 import { Channel } from "src/messaging/channel"
 
-export abstract class MessageRouter {
+export abstract class Router {
 	abstract register(
 		message: Message,
 		channel: Channel<Message>
@@ -12,7 +12,7 @@ export abstract class MessageRouter {
 	): Channel<Message>[] | Promise<Channel<Message>[]>
 }
 
-export class InMemoryMessageRouter extends MessageRouter {
+export class InMemoryMessageRouter extends Router {
 	private RouteRegistry: {
 		message: Message
 		channel: Channel<Message>

@@ -1,4 +1,4 @@
-import {UniqueIdentifier} from "../identifiers/unique-identifier"
+import { UniqueIdentifier } from "../identifiers/unique-identifier"
 
 export interface ModelProperties<ID extends UniqueIdentifier> {
 	readonly id: ID

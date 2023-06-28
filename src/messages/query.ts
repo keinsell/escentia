@@ -1,7 +1,7 @@
-import {Serializable} from "src/__metadata/serializable-property"
-import {DigestCalculator} from "src/checksum/digest-calculator"
-import {DigestAlogorithm} from "../checksum";
-import {Message, MessagePayload, MessageType} from "./message"
+import { Serializable } from "src/__metadata/serializable-property"
+import { DigestCalculator } from "src/checksum/digest-calculator"
+import { DigestAlogorithm } from "../checksum"
+import { Message, MessagePayload, MessageType } from "./message"
 
 export type QueryPayload<T> = MessagePayload<T>
 

@@ -1,8 +1,8 @@
-import {EventEmitter} from "node:events"
-import {Message} from "../messages/message"
-import {Channel} from "../messaging/channel"
-import {Connection} from "../messaging/connection"
-import {Subscriber} from "../messaging/subscriber"
+import { EventEmitter } from "node:events"
+import { Message } from "../messages/message"
+import { Channel } from "../messaging/channel"
+import { Connection } from "../messaging/connection"
+import { Subscriber } from "../messaging/subscriber"
 
 export interface BrokerOptions {
 	builtInScheduling?: boolean
@@ -18,13 +18,16 @@ export abstract class Broker<
 	public instance: unknown | undefined
 	private configuraiton: BrokerOptions
 
-	constructor(connection?: Connection, options: BrokerOptions = {
-		builtInScheduling: false,
-		builtInRetryPolicy: false,
-		builtInDeadLettering: false,
-		builtInMessageRegistry: false,
-		builtInMessageValidation: false,
-	} ) {
+	constructor(
+		connection?: Connection,
+		options: BrokerOptions = {
+			builtInScheduling: false,
+			builtInRetryPolicy: false,
+			builtInDeadLettering: false,
+			builtInMessageRegistry: false,
+			builtInMessageValidation: false,
+		}
+	) {
 		super()
 		this.instance = connection?.instance
 		this.configuraiton = options
@@ -33,7 +36,7 @@ export abstract class Broker<
 	abstract publish<C extends Channels>(
 		channel: C,
 		message: unknown,
-		config?: { metadata: Message["metadata"], headers: Message["headers"] }
+		config?: { metadata: Message["metadata"]; headers: Message["headers"] }
 	): Promise<void> | void
 
 	abstract acknowledge(message: unknown): Promise<void> | void

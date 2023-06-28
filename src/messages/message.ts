@@ -1,8 +1,8 @@
-import {Serializable} from "src/__metadata/serializable-property"
-import {UniqueIdentifier} from "src/identifiers/unique-identifier"
-import {Priority} from "src/messages/priority"
-import {kebabSpace} from "src/utilities/kebab-space"
-import {sequentialId} from "../identifiers";
+import { Serializable } from "src/__metadata/serializable-property"
+import { UniqueIdentifier } from "src/identifiers/unique-identifier"
+import { Priority } from "src/messages/priority"
+import { kebabSpace } from "src/utilities/kebab-space"
+import { sequentialId } from "../identifiers"
 
 export enum MessageType {
 	/**
@@ -70,15 +70,14 @@ export type MessagePayload<T> = Omit<
 	/** Changing a type of message is not a action that we would like to take in constructor I think. */
 	| "type"
 	| "timestamp"
-> &
-	{body: T}
-
-
+> & { body: T }
 
 export abstract class Message<T = unknown> implements MessageProperties {
 	// TODO: How to generate ids and which ID format would be most optimal? Do this should be setup in this abstract on maybe somewhere else like on message construction?
 	@Serializable()
-	public readonly _name: string = MessageUtilities.createMessageName(this.constructor.name)
+	public readonly _name: string = MessageUtilities.createMessageName(
+		this.constructor.name
+	)
 	@Serializable()
 	public readonly id: UniqueIdentifier = sequentialId()
 	@Serializable()

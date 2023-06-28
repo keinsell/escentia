@@ -1,6 +1,6 @@
-import {Priority} from "src/messages/priority"
-import {MessageScheduling} from "src/scheduling/message-scheduling"
-import {Store} from "../infrastructure/store"
+import { Priority } from "src/messages/priority"
+import { MessageScheduling } from "src/scheduling/message-scheduling"
+import { Store } from "../infrastructure/store"
 
 export interface QueuePosition<T> {
 	id: string
