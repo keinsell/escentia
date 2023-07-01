@@ -1,7 +1,7 @@
-import { Serializable } from "src/__metadata/serializable-property"
-import { DigestCalculator } from "src/checksum/digest-calculator"
-import { DigestAlogorithm } from "../checksum"
-import { Message, MessagePayload, MessageType } from "./message"
+import {Serializable} from "src/__metadata/serializable-property"
+import {DigestCalculator} from "src/checksum/digest-calculator"
+import {DigestAlogorithm} from "../checksum"
+import {Message, MessagePayload, MessageType} from "./message"
 
 export type QueryPayload<T> = MessagePayload<T>
 
@@ -17,7 +17,7 @@ export abstract class Query<REQUEST, RESPONSE> extends Message<REQUEST> {
 
 	@Serializable()
 	get checksum(): string {
-		const compositeKey = `${this._name}|${JSON.stringify(this._request)}`
+		const compositeKey = `${this.name}|${JSON.stringify(this._request)}`
 		return this.digestCalculator.checksum(Buffer.from(compositeKey))
 	}
 }

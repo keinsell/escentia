@@ -1,25 +1,26 @@
+import { EmptyObject } from "type-fest"
 import { UniqueIdentifier } from "../identifiers/unique-identifier"
 import { DomainEvent } from "./domain-event"
 import { Entity, EntityProperties } from "./entity"
 
 export abstract class AggregateRoot<
-	ID extends UniqueIdentifier = UniqueIdentifier,
-	PROPERTIES = {}
+  ID extends UniqueIdentifier = UniqueIdentifier,
+  PROPERTIES = EmptyObject
 > extends Entity<ID> {
-	protected constructor(properties: EntityProperties<ID, PROPERTIES>) {
-		super(properties)
-	}
+  protected constructor(properties: EntityProperties<ID, PROPERTIES>) {
+    super(properties)
+  }
 
-	private __events: DomainEvent<AggregateRoot<ID, PROPERTIES>>[] = []
+  private __events: DomainEvent<this>[] = []
 
-	get _events(): DomainEvent<AggregateRoot<ID, PROPERTIES>>[] {
-		return this.__events
-	}
+  get _events(): DomainEvent<this>[] {
+    return this.__events
+  }
 
-	public addEvent<T extends DomainEvent<AggregateRoot<ID, PROPERTIES>>>(
-		event: T
-	): void {
-		this.incrementVersion()
-		this.__events.push(event)
-	}
+  public addEvent<T extends DomainEvent<this>>(
+    event: T
+  ): void {
+    this.incrementVersion()
+    this.__events.push(event)
+  }
 }

@@ -1,5 +1,5 @@
-import { Message } from "src/messages/message"
-import { Channel } from "src/messaging/channel"
+import {Message} from "src/messages/message"
+import {Channel} from "src/messaging/channel"
 
 export abstract class Router {
 	abstract register(
@@ -32,7 +32,7 @@ export class InMemoryMessageRouter extends Router {
 			// Implement your custom logic here to match the message with registered routes
 			// For example, you can compare the message type or content with the registered routes
 			// and return the appropriate channel.
-			return route.message._name === message._name
+			return route.message.name === message.name
 		})
 
 		if (matchedRoutes.length > 0) {
