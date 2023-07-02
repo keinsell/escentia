@@ -1,8 +1,9 @@
-import { Message, MessagePayload, MessageType } from "src/messages/message"
+import {Message, MessagePayload, MessageType} from "src/messages/message"
+import {EmptyObject, Jsonifiable} from "type-fest";
 
-export type DocumentPayload<T = unknown> = MessagePayload<T>
+export type DocumentPayload<T extends Jsonifiable = EmptyObject> = MessagePayload<T>
 
-export abstract class Document<T = unknown> extends Message<T> {
+export abstract class Document<T extends Jsonifiable = EmptyObject> extends Message<T> {
 	protected constructor(properties: DocumentPayload<T>) {
 		super(properties, MessageType.DOCUMENT)
 	}

@@ -1,16 +1,22 @@
 import { MessagePayload } from "src/messages/message"
 import { Event } from "../messages/event"
 import { AggregateRoot } from "./aggregate-root"
-import { Entity } from "./entity"
-import { Jsonify } from "type-fest"
+import { EmptyObject, Jsonify } from "type-fest"
 
-export type DomainEventPayload<ENTITY extends AggregateRoot | Entity> =
-  MessagePayload<{ aggregateId: Jsonify<ENTITY['id']>, aggregateVersion: Jsonify<ENTITY['_version']> }>
+export type DomainEventPayload<Aggregate extends AggregateRoot, AdditionalProperties = EmptyObject> =
+  MessagePayload<{ aggregateId: Jsonify<Aggregate['id']>, aggregateVersion: Jsonify<Aggregate['_version']> } & AdditionalProperties>
 
-export class DomainEvent<AGGREGATE extends AggregateRoot> extends Event<
-  { aggregateId: Jsonify<AGGREGATE['id']>, aggregateVersion: Jsonify<AGGREGATE['_version']> }
+export class DomainEvent<AGGREGATE extends AggregateRoot, AdditionalProperties = EmptyObject> extends Event<
+  { aggregateId: string, aggregateVersion: number } & AdditionalProperties
 > {
-  constructor(payload: DomainEventPayload<AGGREGATE>) {
-    super(payload)
+  constructor(payload: DomainEventPayload<AGGREGATE, AdditionalProperties>) {
+    super({
+      ...payload,
+      body: {
+        ...payload.body,
+        aggregateId: JSON.stringify(payload.body.aggregateId),
+        aggregateVersion: payload.body.aggregateVersion as number,
+      },
+    })
   }
 }

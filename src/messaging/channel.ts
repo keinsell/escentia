@@ -18,58 +18,65 @@ import { Queue } from "src/scheduling/queue"
 // TODO: Exchanges are channels used in the context of message routing and distribution. Publishers send messages to an exchange, which acts as a central point responsible for routing messages to one or more queues based on predefined rules or routing keys. Exchanges allow for flexible and dynamic message routing patterns.
 
 export interface ChannelConfiguration {
-	/** Some brokers may provide serialization functionality, however there is a option to inject custom made serializers and deserializers. */
-	serialization?: {
-		serializer: MessageSerializer
-		deserializer: MessageDeserializer
-	}
-	scheduling?: SchedulingAlgorithm
-	/** When channel do not support Queueing there is possibility to inject custom-made queue that will schedule messages. */
-	queueing?: Queue
-	maxListeners?: number
+  /** Some brokers may provide serialization functionality, however there is a option to inject custom made serializers and deserializers. */
+  serialization?: {
+    serializer: MessageSerializer
+    deserializer: MessageDeserializer
+  }
+  scheduling?: SchedulingAlgorithm
+  /** When channel do not support Queueing there is possibility to inject custom-made queue that will schedule messages. */
+  queueing?: Queue
+  maxListeners?: number
 }
 
 /** Channels, also known as topics, queues, or exchanges */
 export abstract class Channel<M extends Message> extends EventEmitter {
-	public readonly _name: string = kebabSpace(this.constructor.name)
-	public readonly _type: ChannelType = ChannelType.DATATYPE
-	protected subscribers: Subscriber[] = []
+  public readonly _name: string = kebabSpace(this.constructor.name)
+  public readonly _type: ChannelType = ChannelType.DATATYPE
+  protected subscribers: Subscriber[] = []
+  protected readonly broker: Broker<this>
 
-	constructor(
-		protected readonly broker: Broker<any>,
-		protected readonly configuration?: ChannelConfiguration
-	) {
-		super()
-	}
+  constructor(
+    type: ChannelType,
+    broker: Broker<Channel<M>>,
+    protected readonly configuration?: ChannelConfiguration
+  ) {
+    super()
+    this.broker = broker
+    this._type = type
+  }
 
-	async publish<T extends M>(message: T): Promise<void> {
-		this.broker.publish(this._name, this.serialize(message))
-	}
+  async publish<T extends M>(message: T): Promise<void> {
+    this.broker.publish(this, this.serialize(message))
+  }
 
-	async subscribe(subscriber: Subscriber): Promise<void> {
-		// Do not allow exceeding limit of maximum listeners
-		if (this.configuration?.maxListeners) {
-			if (this.subscribers.length >= this.configuration?.maxListeners) {
-				throw new Error(`Max listeners reached for channel ${this._name}`)
-			}
-		}
+  async subscribe(subscriber: Subscriber): Promise<void> {
+    // Do not allow exceeding limit of maximum listeners
+    if (this.configuration?.maxListeners) {
+      if (this.subscribers.length >= this.configuration?.maxListeners) {
+        throw new Error(`Max listeners reached for channel ${this._name}`)
+      }
+    }
+    this.subscribers.push(subscriber)
+    this.broker.subscribe(this, subscriber)
+  }
 
-		this.subscribers.push(subscriber)
-		this.broker.subscribe(this._name, subscriber)
-	}
+  async unsubscribe(subscriber: Subscriber): Promise<void> {
+    this.subscribers = this.subscribers.filter(
+      (existingSubscriber) => existingSubscriber !== subscriber
+    )
 
-	async unsubscribe(subscriber: Subscriber): Promise<void> {
-		this.broker.unsubscribe(this._name, subscriber)
-	}
+    this.broker.unsubscribe(this, subscriber)
+  }
 
-	protected serialize(message: Message<unknown>) {
-		let formattedMessage: unknown = message
+  protected serialize(message: Message) {
+    let formattedMessage: unknown = message
 
-		if (this.configuration?.serialization) {
-			formattedMessage =
-				this.configuration.serialization.serializer.serialize(message)
-		}
+    if (this.configuration?.serialization) {
+      formattedMessage =
+        this.configuration.serialization.serializer.serialize(message)
+    }
 
-		return formattedMessage
-	}
+    return formattedMessage
+  }
 }

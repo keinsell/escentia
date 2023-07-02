@@ -1,5 +1,4 @@
 import {Message} from "src/messages/message";
-import {SerializablePropertyKey} from "../../__metadata/serializable-property";
 
 export abstract class MessageSerializer<T = unknown> {
   abstract serialize(message: Message): T;
@@ -7,7 +6,7 @@ export abstract class MessageSerializer<T = unknown> {
 
 export class JSONMessageSerializer extends MessageSerializer<string> {
   serialize(message: Message): string {
-    const propertiesToSerialize = [...Reflect.getMetadata(SerializablePropertyKey, message) || [], "_type"];
+    // const propertiesToSerialize = [...Reflect.getMetadata(SerializablePropertyKey, message) || [], "_type"];
     const visited = new WeakSet();
 
     // Fix for circular references

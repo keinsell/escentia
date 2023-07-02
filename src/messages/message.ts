@@ -1,9 +1,9 @@
-import { Serializable } from "src/__metadata/serializable-property"
-import { UniqueIdentifier } from "src/identifiers/unique-identifier"
-import { Priority } from "src/messages/priority"
-import { kebabSpace } from "src/utilities/kebab-space"
-import { sequentialId } from "../identifiers"
-import type { EmptyObject, JsonValue, Jsonifiable, KebabCase } from 'type-fest'
+import {Serializable} from "src/__metadata/serializable-property"
+import {UniqueIdentifier} from "src/identifiers/unique-identifier"
+import {Priority} from "src/messages/priority"
+import {kebabSpace} from "src/utilities/kebab-space"
+import type {Jsonifiable, KebabCase} from 'type-fest'
+import {sequentialId} from "../identifiers"
 
 export enum MessageType {
   /**
@@ -73,9 +73,9 @@ export type MessagePayload<T extends Jsonifiable> = Omit<
   | "timestamp"
 > & { body: T }
 
-export abstract class Message<T extends Jsonifiable = EmptyObject> implements MessageProperties {
+export abstract class Message<T extends Jsonifiable = any> implements MessageProperties {
   @Serializable()
-  public readonly name: KebabCase<Message["constructor"]["name"]> = MessageUtilities.createMessageName(
+  public readonly name: KebabCase<Message<any>["constructor"]["name"]> = MessageUtilities.createMessageName(
     this.constructor.name
   )
   @Serializable()

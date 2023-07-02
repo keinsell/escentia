@@ -1,11 +1,12 @@
 import {Serializable} from "src/__metadata/serializable-property"
 import {DigestCalculator} from "src/checksum/digest-calculator"
+import {EmptyObject, Jsonifiable} from "type-fest";
 import {DigestAlogorithm} from "../checksum"
 import {Message, MessagePayload, MessageType} from "./message"
 
-export type QueryPayload<T> = MessagePayload<T>
+export type QueryPayload<T extends Jsonifiable = EmptyObject> = MessagePayload<T>
 
-export abstract class Query<REQUEST, RESPONSE> extends Message<REQUEST> {
+export abstract class Query<REQUEST extends Jsonifiable = EmptyObject, RESPONSE extends Jsonifiable = EmptyObject> extends Message<REQUEST> {
 	public readonly _response: RESPONSE = null as unknown as RESPONSE
 	public readonly _request: REQUEST = null as unknown as REQUEST
 

@@ -1,9 +1,6 @@
-import {EventEmitter} from "node:events"
 import "reflect-metadata";
 import {Model, ModelProperties} from "src/data-modeling/model"
 import {DomainEvent} from "src/domain-modeling/domain-event";
-import {Broker} from "src/infrastructure/broker";
-import {InMemoryPointToPointChannel} from "src/messaging/channels/point-to-point/point-to-point-channel";
 import {Handler} from "src/messaging/handler";
 import {JsonMessageDeserializer} from "src/messaging/serializer/message-deserializer";
 import {JSONMessageSerializer} from "src/messaging/serializer/message-serializer";
@@ -12,6 +9,7 @@ import {SerializableMessage} from "../src/__metadata/message-registry";
 import {AggregateRoot} from "../src/domain-modeling/aggregate-root";
 import {EntityProperties} from "../src/domain-modeling/entity";
 import {SequentialId} from "../src/identifiers/sequential-id/sequential-id";
+import {EmailChangedChannel} from "./user/infrastructure/email-changed-channel";
 
 interface UserModelProperties extends ModelProperties<string> {
   email: string
@@ -54,36 +52,6 @@ export class User extends AggregateRoot<SequentialId, UserProperties> implements
 }
 
 const userAggregate = new User({ email: "keinsel@protonmail.com" })
-
-export class EventEmitterBroker extends Broker<EmailChangedChannel> {
-  private broker = new EventEmitter()
-  private registry = new Map<string, Subscriber>()
-
-  override publish(message: unknown): void | Promise<void> {
-    this.broker.emit("message", message)
-  }
-
-  override acknowledge(message: unknown): void | Promise<void> {
-    this.broker.emit("acknowledge", message)
-  }
-
-  override subscribe(channel: EmailChangedChannel, subscriber: Subscriber): void | Promise<void> {
-    this.registry.set(channel.constructor.name, subscriber)
-    this.broker.on("message", (message: unknown) => {
-      subscriber.handle(message)
-    })
-  }
-
-  override unsubscribe(channel: EmailChangedChannel, _subscriber: Subscriber): void | Promise<void> {
-    this.registry.delete(channel.constructor.name)
-  }
-}
-
-export class EmailChangedChannel extends InMemoryPointToPointChannel<EmailChanged> {
-  constructor() {
-    super(new EventEmitterBroker())
-  }
-}
 
 export class EmailChangedHandler extends Handler<EmailChanged> {
   public override handle(input: EmailChanged): void | Promise<void> {

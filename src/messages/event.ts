@@ -1,8 +1,9 @@
-import { Message, MessagePayload, MessageType } from "src/messages/message"
+import {Message, MessagePayload, MessageType} from "src/messages/message"
+import {EmptyObject, Jsonifiable} from "type-fest";
 
-export type EventPayload<T = unknown> = MessagePayload<T>
+export type EventPayload<T extends Jsonifiable = EmptyObject> = MessagePayload<T>
 
-export abstract class Event<T = unknown> extends Message<T> {
+export abstract class Event<T extends Jsonifiable = EmptyObject> extends Message<T> {
 	protected constructor(properties: EventPayload<T>) {
 		super(properties, MessageType.EVENT)
 	}
