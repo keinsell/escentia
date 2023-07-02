@@ -1,10 +1,10 @@
-import { Handler } from "./handler"
-import { MessageDeserializer } from "./serializer/message-deserializer"
+import {Handler} from "./handler"
+import {Deserializer} from "./serializer/deserializer"
 
 export class Subscriber {
 	constructor(
 		public handler: Handler,
-		public deserializer?: MessageDeserializer
+		public deserializer?: Deserializer
 	) {}
 
 	public async handle(input: unknown): Promise<void> {

@@ -1,7 +1,7 @@
 import {EventEmitter} from "node:events";
 import {Broker} from "../../src/infrastructure/broker";
-import {Channel} from "../../src/messaging/channel";
-import {Subscriber} from "../../src/messaging/subscriber";
+import {Channel} from "../../src/infrastructure/channel";
+import {Subscriber} from "../../src/infrastructure/subscriber";
 import {EmailChangedChannel} from "../user/infrastructure/email-changed-channel";
 
 export class EventEmitterBroker<C extends Channel<any>> extends Broker<C> {

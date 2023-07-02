@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import {InMemoryPointToPointChannel} from "src/messaging/channels/point-to-point/point-to-point-channel";
-import {Handler} from "src/messaging/handler";
-import {Subscriber} from "src/messaging/subscriber";
+import {InMemoryPointToPointChannel} from "src/infrastructure/channels/point-to-point/point-to-point-channel";
+import {Handler} from "src/infrastructure/handler";
+import {Subscriber} from "src/infrastructure/subscriber";
 import {sequentialId} from "../src/identifiers/sequential-id/sequential-id";
 import {eventEmitterBroker} from "./infrastructure/event-emitter-broker";
 import {EmailChanged} from "./user/email-changed";

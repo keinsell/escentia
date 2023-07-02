@@ -1,4 +1,4 @@
-import {Specification} from "../../specification";
+import {Specification} from "../../utilities/specification";
 
 export class IsUlid extends Specification<string> {
     public satisfy(i: string): boolean {

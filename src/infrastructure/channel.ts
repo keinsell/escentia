@@ -1,13 +1,13 @@
-import { EventEmitter } from "node:events"
-import { SchedulingAlgorithm } from "src/scheduling/scheduling-algorithm"
-import { kebabSpace } from "src/utilities/kebab-space"
-import { Broker } from "../infrastructure/broker"
-import { Message } from "../messages/message"
-import { ChannelType } from "./channels/channel-type"
-import { Subscriber } from "./subscriber"
-import { MessageSerializer } from "./serializer/message-serializer"
-import { MessageDeserializer } from "./serializer/message-deserializer"
-import { Queue } from "src/scheduling/queue"
+import {EventEmitter} from "node:events"
+import {Queue} from "src/scheduling/queue"
+import {SchedulingAlgorithm} from "src/scheduling/scheduling-algorithm"
+import {kebabSpace} from "src/utilities/kebab-space"
+import {Message} from "../messages/message"
+import {Broker} from "./broker"
+import {ChannelType} from "./channels/channel-type"
+import {Deserializer} from "./serializer/deserializer"
+import {Serializer} from "./serializer/serializer"
+import {Subscriber} from "./subscriber"
 
 // TODO: Channels are a generic term that refers to the communication pathways through which messages flow between publishers and subscribers in a message broker system. It represents the logical communication paths or destinations for messages. Channels can encompass various types, such as topics, queues, or exchanges, depending on the messaging system or broker being used.
 
@@ -20,8 +20,8 @@ import { Queue } from "src/scheduling/queue"
 export interface ChannelConfiguration {
   /** Some brokers may provide serialization functionality, however there is a option to inject custom made serializers and deserializers. */
   serialization?: {
-    serializer: MessageSerializer
-    deserializer: MessageDeserializer
+    serializer: Serializer
+    deserializer: Deserializer
   }
   scheduling?: SchedulingAlgorithm
   /** When channel do not support Queueing there is possibility to inject custom-made queue that will schedule messages. */

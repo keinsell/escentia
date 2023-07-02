@@ -1,6 +1,6 @@
 import {Message} from "src/messages/message"
-import {Router} from "../infrastructure/router"
-import {Store} from "../infrastructure/store"
+import {Store} from "../persistance/store"
+import {Router} from "./router"
 
 export abstract class Publisher {
 	protected constructor(

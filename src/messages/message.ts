@@ -1,9 +1,9 @@
-import {Serializable} from "src/__metadata/serializable-property"
 import {UniqueIdentifier} from "src/identifiers/unique-identifier"
-import {Priority} from "src/messages/priority"
+import {Serializable} from "src/infrastructure/serializer/serializable-property"
+import {Priority} from "src/messages/properties/priority"
 import {kebabSpace} from "src/utilities/kebab-space"
 import type {Jsonifiable, KebabCase} from 'type-fest'
-import {sequentialId} from "../identifiers"
+import {ulid} from "../identifiers"
 
 export enum MessageType {
   /**
@@ -79,7 +79,7 @@ export abstract class Message<T extends Jsonifiable = any> implements MessagePro
     this.constructor.name
   )
   @Serializable()
-  public readonly id: UniqueIdentifier = sequentialId()
+  public readonly id: UniqueIdentifier = ulid()
   @Serializable()
   public readonly causationId?: UniqueIdentifier | undefined
   @Serializable()

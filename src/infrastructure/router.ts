@@ -1,5 +1,5 @@
+import {Channel} from "src/infrastructure/channel"
 import {Message} from "src/messages/message"
-import {Channel} from "src/messaging/channel"
 
 export abstract class Router {
 	abstract register(

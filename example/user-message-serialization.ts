@@ -1,14 +1,14 @@
 import "reflect-metadata";
 import {Model, ModelProperties} from "src/data-modeling/model"
 import {DomainEvent} from "src/domain-modeling/domain-event";
-import {Handler} from "src/messaging/handler";
-import {JsonMessageDeserializer} from "src/messaging/serializer/message-deserializer";
-import {JSONMessageSerializer} from "src/messaging/serializer/message-serializer";
-import {Subscriber} from "src/messaging/subscriber";
-import {SerializableMessage} from "../src/__metadata/message-registry";
+import {Handler} from "src/infrastructure/handler";
+import {JsonDeserializer} from "src/infrastructure/serializer/deserializer";
+import {JSONSerializer} from "src/infrastructure/serializer/serializer";
+import {Subscriber} from "src/infrastructure/subscriber";
 import {AggregateRoot} from "../src/domain-modeling/aggregate-root";
 import {EntityProperties} from "../src/domain-modeling/entity";
 import {SequentialId} from "../src/identifiers/sequential-id/sequential-id";
+import {SerializableMessage} from "../src/infrastructure/serializer/serialization-class-registry";
 import {EmailChangedChannel} from "./user/infrastructure/email-changed-channel";
 
 interface UserModelProperties extends ModelProperties<string> {
@@ -78,7 +78,7 @@ await channel.subscribe(emailChangedSubscriber)
 userAggregate.changeEmail("keinell@protonmail.com")
 const event = await userAggregate._events[0] as EmailChanged
 console.log(event)
-const serialized = new JSONMessageSerializer().serialize(event)
+const serialized = new JSONSerializer().serialize(event)
 console.log(serialized)
-const deserialized = new JsonMessageDeserializer().deserialize(serialized)
+const deserialized = new JsonDeserializer().deserialize(serialized)
 console.log(deserialized)

@@ -1,8 +1,8 @@
-import { EventEmitter } from "node:events"
-import { Message } from "../messages/message"
-import { Channel } from "../messaging/channel"
-import { Connection } from "../messaging/connection"
-import { Subscriber } from "../messaging/subscriber"
+import {EventEmitter} from "node:events"
+import {Message} from "../messages/message"
+import {Channel} from "./channel"
+import {Connection} from "./connection"
+import {Subscriber} from "./subscriber"
 
 export interface BrokerOptions {
   builtInScheduling?: boolean

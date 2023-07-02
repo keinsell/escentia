@@ -1,5 +1,5 @@
-import {Serializable} from "src/__metadata/serializable-property"
 import {DigestCalculator} from "src/checksum/digest-calculator"
+import {Serializable} from "src/infrastructure/serializer/serializable-property"
 import {EmptyObject, Jsonifiable} from "type-fest";
 import {DigestAlogorithm} from "../checksum"
 import {Message, MessagePayload, MessageType} from "./message"

@@ -1,4 +1,4 @@
-import { Specification } from "src/specification";
+import {Specification} from "src/utilities/specification";
 
 
 export class IsSequentialID

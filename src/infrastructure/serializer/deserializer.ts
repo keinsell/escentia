@@ -1,16 +1,16 @@
 import {Message} from "src/messages/message";
-import {MessageRegistryStorage} from "../../__metadata/message-registry";
+import {ClassSerializationRegistry} from "./serialization-class-registry";
 
 
-export abstract class MessageDeserializer<T = unknown> {
-  abstract deserialize<P>(message: T): Message<P>;
+export abstract class Deserializer<T = unknown> {
+  abstract deserialize<P>(data: T): P;
 }
 
-export class JsonMessageDeserializer extends MessageDeserializer<string> {
+export class JsonDeserializer extends Deserializer<string> {
   deserialize<P>(message: string): Message<P> {
     const jsonObject = JSON.parse(message);
     const messageType = jsonObject._name;
-    const messageConstructor = MessageRegistryStorage.get(messageType);
+    const messageConstructor = ClassSerializationRegistry.get(messageType);
 
     if (!messageConstructor) {
       throw new Error(`Unknown message type: ${messageType}`);

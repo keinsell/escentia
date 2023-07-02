@@ -1,8 +1,7 @@
-import { Broker } from "src/infrastructure/broker";
-import { Message } from "src/messages/message";
-import { Channel, ChannelConfiguration } from "src/messaging/channel";
-import { ChannelType } from "src/messaging/channels/channel-type";
-import { Queue } from "../../../scheduling/queue";
+import {Broker} from "src/infrastructure/broker";
+import {Channel, ChannelConfiguration} from "src/infrastructure/channel";
+import {ChannelType} from "src/infrastructure/channels/channel-type";
+import {Message} from "src/messages/message";
 
 // TODO: Think how to implement queueing when working with local broker make it compatible with remote broker like RabbitMQ
 
