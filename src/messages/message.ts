@@ -4,6 +4,22 @@ import {Priority} from "src/messages/properties/priority"
 import {kebabSpace} from "src/utilities/kebab-space"
 import type {Jsonifiable, KebabCase} from 'type-fest'
 import {ulid} from "../identifiers"
+import {ClassSerializationRegistry} from "../infrastructure/serializer/serialization-class-registry";
+
+export class MessageUtilities {
+  static createMessageName(name: string): KebabCase<string> {
+    const commonSuffix = ["Query", "Command", "Event", "Message", "Document", "Request", "Reply"]
+
+    for (const suffix of commonSuffix) {
+      if (name.endsWith(suffix)) {
+        return name.slice(0, -suffix.length)
+      }
+    }
+
+    return kebabSpace(name)
+  }
+}
+
 
 export enum MessageType {
   /**
@@ -76,7 +92,7 @@ export type MessagePayload<T extends Jsonifiable> = Omit<
 export abstract class Message<T extends Jsonifiable = any> implements MessageProperties {
   @Serializable()
   public readonly name: KebabCase<Message<any>["constructor"]["name"]> = MessageUtilities.createMessageName(
-    this.constructor.name
+      this.constructor.name
   )
   @Serializable()
   public readonly id: UniqueIdentifier = ulid()
@@ -98,8 +114,8 @@ export abstract class Message<T extends Jsonifiable = any> implements MessagePro
   public readonly body: T
 
   protected constructor(
-    message: MessagePayload<T>,
-    type: MessageType = MessageType.DOCUMENT
+      message: MessagePayload<T>,
+      type: MessageType = MessageType.DOCUMENT
   ) {
     this.causationId = message.causationId
     this.correlationId = message.correlationId
@@ -130,18 +146,13 @@ export abstract class Message<T extends Jsonifiable = any> implements MessagePro
   causate(message: Message) {
     this.causationId = message.id
   }
-}
 
-export class MessageUtilities {
-  static createMessageName(name: string): KebabCase<string> {
-    const commonSuffix = ["Query", "Command", "Event", "Message", "Document", "Request", "Reply"]
+  static {
+    const name = MessageUtilities.createMessageName(this.constructor.name)
 
-    for (const suffix of commonSuffix) {
-      if (name.endsWith(suffix)) {
-        return name.slice(0, -suffix.length)
-      }
+    if (!ClassSerializationRegistry.has(name)) {
+      ClassSerializationRegistry.set(name, this.constructor as any)
+      console.log(`Registered message "${name}"`)
     }
-
-    return kebabSpace(name)
   }
 }

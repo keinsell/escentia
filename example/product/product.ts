@@ -1,7 +1,7 @@
 import {AggregateRoot} from "../../src/domain-modeling/aggregate-root";
 import {EntityProperties} from "../../src/domain-modeling/entity";
 import {CUID} from "../../src/identifiers";
-import {ProductNameChanged} from "./product-name-changed";
+import {ProductNameChanged} from "./evnets/product-name-changed";
 
 
 interface ProductProperties {

@@ -1,17 +1,20 @@
 import {Product} from "./product";
 
-const storage: Product[] = [];
+const PRODUCT_DATABASE: Product[] = [];
 
 export class ProductRepository {
-    constructor() {
-        console.log("ProductRepository loaded");
-        console.log(this.constructor.name);
+    async save(product: Product) {
+        // Find and update or create
+        const index = PRODUCT_DATABASE.findIndex(o => o.id === product.id)
+        if (index === -1) {
+            PRODUCT_DATABASE.push(product)
+        }
+        else {
+            PRODUCT_DATABASE[index] = product
+        }
     }
 
-    async createProduct(product: Product) {
-        console.log("ProductRepository.createProduct");
-        console.log(product);
-
-        storage.push(product);
+    public getById(aggregateId: string) {
+        return PRODUCT_DATABASE.find(o => o.id === aggregateId)
     }
 }
