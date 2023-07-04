@@ -1,7 +1,7 @@
-import {Broker} from "src/infrastructure/broker";
-import {Channel, ChannelConfiguration} from "src/infrastructure/channel";
-import {ChannelType} from "src/infrastructure/channels/channel-type";
-import {Message} from "src/messages/message";
+import {Channel, ChannelConfiguration} from "src/eips/channels/channel";
+import {ChannelType} from "src/eips/channels/channel-type";
+import {Message} from "src/eips/messages/message";
+import {Broker} from "src/eips/routing/broker/broker";
 
 // TODO: Think how to implement queueing when working with local broker make it compatible with remote broker like RabbitMQ
 

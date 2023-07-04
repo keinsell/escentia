@@ -1,6 +1,6 @@
-import { Command } from "src/messages";
-import { OrderProperties } from "../order.aggregate";
-import { Jsonify } from "type-fest";
+import {Command} from "src/eips/messages";
+import {Jsonify} from "type-fest";
+import {OrderProperties} from "../order.aggregate";
 
 export class CreateOrderCommand extends Command<Jsonify<OrderProperties>> {
   protected constructor(command: Jsonify<OrderProperties>) {

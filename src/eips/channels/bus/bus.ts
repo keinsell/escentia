@@ -1,6 +1,6 @@
+import {Handler} from "../../../infrastructure/handler";
 import {Reply, Request} from "../../messages";
 import {Message} from "../../messages/message";
-import {Handler} from "../handler";
 
 export abstract class Bus {
     abstract publish(message: Message): Promise<void>;

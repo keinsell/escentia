@@ -1,4 +1,4 @@
-import {Priority} from "src/messages/properties/priority"
+import {Priority} from "src/eips/messages/properties/priority"
 import {MessageScheduling} from "src/scheduling/message-scheduling"
 import {Store} from "../persistance/store"
 

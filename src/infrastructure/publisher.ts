@@ -1,6 +1,6 @@
-import {Message} from "src/messages/message"
+import {Message} from "src/eips/messages/message"
+import {Router} from "../eips/routing/router/router"
 import {Store} from "../persistance/store"
-import {Router} from "./router"
 
 export abstract class Publisher {
 	protected constructor(

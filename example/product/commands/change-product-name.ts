@@ -1,5 +1,5 @@
+import {Command} from "../../../src/eips/messages";
 import {Handler} from "../../../src/infrastructure/handler";
-import {Command} from "../../../src/messages";
 import {ProductRepository} from "../product-repository";
 
 export class ChangeProductName extends Command<{aggregateId: string, name: string}> {}

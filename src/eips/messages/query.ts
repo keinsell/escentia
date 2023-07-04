@@ -1,7 +1,7 @@
 import {DigestCalculator} from "src/checksum/digest-calculator"
-import {Serializable} from "src/infrastructure/serializer/serializable-property"
+import {Serializable} from "src/eips/transformation/serializer/registry/serializable-property"
 import {EmptyObject, Jsonifiable} from "type-fest";
-import {DigestAlogorithm} from "../checksum"
+import {DigestAlogorithm} from "../../checksum"
 import {Message, MessagePayload, MessageType} from "./message"
 
 export type QueryPayload<T extends Jsonifiable = EmptyObject> = MessagePayload<T>

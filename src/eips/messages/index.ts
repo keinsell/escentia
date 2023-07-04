@@ -1,4 +1,4 @@
-import {SerializableMessage} from "../infrastructure/serializer/serialization-class-registry"
+import {SerializableMessage} from "../transformation/serializer/registry/serialization-class-registry"
 import {Command, CommandPayload} from "./command"
 import {Document, DocumentPayload} from "./document"
 import {Event, EventPayload} from "./event"

@@ -1,6 +1,6 @@
 import {Class, Constructor} from "type-fest";
+import {Handler} from "../../../../infrastructure/handler";
 import {Message} from "../../../messages/message";
-import {Handler} from "../../handler";
 
 interface HandlerRegistryEntry {
     message: Constructor<Message>

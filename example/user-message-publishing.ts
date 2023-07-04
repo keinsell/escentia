@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {InMemoryPointToPointChannel} from "src/infrastructure/channels/point-to-point/point-to-point-channel";
+import {InMemoryPointToPointChannel} from "src/eips/channels/point-to-point/point-to-point-channel";
 import {Handler} from "src/infrastructure/handler";
 import {Subscriber} from "src/infrastructure/subscriber";
 import {sequentialId} from "../src/identifiers/sequential-id/sequential-id";

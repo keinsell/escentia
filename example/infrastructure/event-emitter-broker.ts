@@ -1,6 +1,6 @@
 import {EventEmitter} from "node:events";
-import {Broker} from "../../src/infrastructure/broker";
-import {Channel} from "../../src/infrastructure/channel";
+import {Channel} from "../../src/eips/channels/channel";
+import {Broker} from "../../src/eips/routing/broker/broker";
 import {Subscriber} from "../../src/infrastructure/subscriber";
 import {EmailChangedChannel} from "../user/infrastructure/email-changed-channel";
 

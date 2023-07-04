@@ -1,15 +1,14 @@
 export abstract class Handler<INPUT = unknown, OUTPUT = void> {
-
-	$preHandle() {
+	async $preHandle(): Promise<void> {
 		console.log("PreHandle");
 	}
 
-	$postHandle() {
+	async $postHandle(): Promise<void> {
 		console.log("PostHandle");
 	}
 
-	$onError() {
-		console.log("OnError");
+	async $onError(e: unknown): Promise<void>  {
+		console.log("OnError", e);
 	}
 
 	public abstract handle(input: INPUT): OUTPUT | Promise<OUTPUT>

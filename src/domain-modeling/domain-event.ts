@@ -1,7 +1,7 @@
-import { MessagePayload } from "src/messages/message"
-import { Event } from "../messages/event"
-import { AggregateRoot } from "./aggregate-root"
-import { EmptyObject, Jsonify } from "type-fest"
+import {MessagePayload} from "src/eips/messages/message"
+import {EmptyObject, Jsonify} from "type-fest"
+import {Event} from "../eips/messages/event"
+import {AggregateRoot} from "./aggregate-root"
 
 export type DomainEventPayload<Aggregate extends AggregateRoot, AdditionalProperties = EmptyObject> =
   MessagePayload<{ aggregateId: Jsonify<Aggregate['id']>, aggregateVersion: Jsonify<Aggregate['_version']> } & AdditionalProperties>

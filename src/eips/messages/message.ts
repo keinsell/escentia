@@ -1,10 +1,10 @@
+import {Priority} from "src/eips/messages/properties/priority"
+import {Serializable} from "src/eips/transformation/serializer/registry/serializable-property"
 import {UniqueIdentifier} from "src/identifiers/unique-identifier"
-import {Serializable} from "src/infrastructure/serializer/serializable-property"
-import {Priority} from "src/messages/properties/priority"
 import {kebabSpace} from "src/utilities/kebab-space"
-import type {Jsonifiable, KebabCase} from 'type-fest'
-import {ulid} from "../identifiers"
-import {ClassSerializationRegistry} from "../infrastructure/serializer/serialization-class-registry";
+import type {EmptyObject, Jsonifiable, KebabCase} from 'type-fest'
+import {ulid} from "../../identifiers"
+import {ClassSerializationRegistry} from "../transformation/serializer/registry/serialization-class-registry";
 
 export class MessageUtilities {
   static createMessageName(name: string): KebabCase<string> {
@@ -49,7 +49,7 @@ export enum MessageType {
  * that are exchanged between different services in a message-based
  * architecture.
  */
-interface MessageProperties {
+interface MessageProperties<T extends Jsonifiable = EmptyObject> {
   readonly id: UniqueIdentifier
   /** ﻿`causationId` is an identifier used in event-driven architectures to track
    * the causal relationship between events. It represents the ID of the event that
@@ -77,11 +77,11 @@ interface MessageProperties {
   readonly priority?: Priority
   readonly headers?: Record<string, unknown> | undefined
   readonly metadata?: Record<string, unknown> | undefined
-  readonly body?: unknown
+  readonly body: T
 }
 
-export type MessagePayload<T extends Jsonifiable> = Omit<
-  MessageProperties,
+export type MessagePayload<T extends Jsonifiable = EmptyObject> = Omit<
+  MessageProperties<T>,
   /** Maybe for reconstruction purposes we may need that, actually will keep this omited. */
   | "id"
   /** Changing a type of message is not a action that we would like to take in constructor I think. */
@@ -89,7 +89,7 @@ export type MessagePayload<T extends Jsonifiable> = Omit<
   | "timestamp"
 > & { body: T }
 
-export abstract class Message<T extends Jsonifiable = any> implements MessageProperties {
+export abstract class Message<T extends Jsonifiable = EmptyObject> implements MessageProperties<T> {
   @Serializable()
   public readonly name: KebabCase<Message<any>["constructor"]["name"]> = MessageUtilities.createMessageName(
       this.constructor.name
@@ -135,16 +135,6 @@ export abstract class Message<T extends Jsonifiable = any> implements MessagePro
     }
     this.body = message.body
     Object.assign(this, message)
-  }
-
-  /** Correlate message with given message. */
-  correlate(message: Message) {
-    this.correlationId = message.id
-  }
-
-  /** Mark message as caused by given message. */
-  causate(message: Message) {
-    this.causationId = message.id
   }
 
   static {

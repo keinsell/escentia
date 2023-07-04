@@ -2,12 +2,12 @@ import {EventEmitter} from "node:events"
 import {Queue} from "src/scheduling/queue"
 import {SchedulingAlgorithm} from "src/scheduling/scheduling-algorithm"
 import {kebabSpace} from "src/utilities/kebab-space"
+import {Subscriber} from "../../infrastructure/subscriber"
 import {Message} from "../messages/message"
-import {Broker} from "./broker"
-import {ChannelType} from "./channels/channel-type"
-import {Deserializer} from "./serializer/deserializer"
-import {Serializer} from "./serializer/serializer"
-import {Subscriber} from "./subscriber"
+import {Broker} from "../routing/broker/broker"
+import {Deserializer} from "../transformation/serializer/deserializer"
+import {Serializer} from "../transformation/serializer/serializer"
+import {ChannelType} from "./channel-type"
 
 // TODO: Channels are a generic term that refers to the communication pathways through which messages flow between publishers and subscribers in a message broker system. It represents the logical communication paths or destinations for messages. Channels can encompass various types, such as topics, queues, or exchanges, depending on the messaging system or broker being used.
 

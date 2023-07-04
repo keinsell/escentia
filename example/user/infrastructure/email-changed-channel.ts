@@ -1,4 +1,4 @@
-import {InMemoryPointToPointChannel} from "../../../src/infrastructure/channels/point-to-point/point-to-point-channel";
+import {InMemoryPointToPointChannel} from "../../../src/eips/channels/point-to-point/point-to-point-channel";
 import {EventEmitterBroker} from "../../infrastructure/event-emitter-broker";
 import {EmailChanged} from "../../user-message-serialization";
 

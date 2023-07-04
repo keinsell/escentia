@@ -1,5 +1,5 @@
-import {Channel} from "src/infrastructure/channel"
-import {Message} from "src/messages/message"
+import {Channel} from "src/eips/channels/channel"
+import {Message} from "src/eips/messages/message"
 
 export abstract class Router {
 	abstract register(
@@ -22,6 +22,19 @@ export class InMemoryMessageRouter extends Router {
 		message: Message,
 		channel: Channel<Message>
 	): Promise<void> | void {
+		// Find if message exists
+		const existingRoute = this.RouteRegistry.find(
+			(route) => route.message.name === message.name
+		)
+
+		if (existingRoute) {
+			// Check if the channel is same
+			if (existingRoute.channel !== channel) {
+				// Throw an error or handle the case when the same message is registered with different channels
+				throw new Error("Message already registered with a different channel.")
+			}
+		}
+
 		this.RouteRegistry.push({ message, channel })
 	}
 
