@@ -1,5 +1,5 @@
-import {DomainEvent} from "../../src/domain-modeling/domain-event";
-import {Product} from "./product";
+import {DomainEvent} from "../../../src/domain-modeling/domain-event";
+import {Product} from "../product";
 
 export class ProductNameChanged extends DomainEvent<Product, {name: string}> {
     constructor(product: Product) {
