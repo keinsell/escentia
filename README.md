@@ -13,3 +13,7 @@ I'm pissed off on ecosystem, especially dumb fucks who made `nestjs`.
 - Bare minimum message/service bus which will support different transports (Message Brokers) `EventEmitter`, `RabbitMQ`, `Kafka`, `NATS` and `SQS`.
 - Support for long-running serivices by usage of `Workflow`s and `Saga`s to build asynchronic processes at glance.
 - Automated discovery of message handlers by usage of decorators, like `@HandleMessage(UserCreated)`.
+
+## Credits
+
+- Library uses `Option<T>` and `Result<T,E>` from `oxide.ts`.
