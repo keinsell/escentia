@@ -40,11 +40,11 @@
     },
     "outDir": "dist",
     "include": [
+      "example/**/*",
       "src/**/*"
     ],
     "exclude": [
       "node_modules",
-      "../../node_modules"
     ]
   }
 }

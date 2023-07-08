@@ -1,10 +1,10 @@
-import {Priority} from "src/eips/messages/properties/priority"
-import {Serializable} from "src/eips/transformation/serializer/registry/serializable-property"
-import {UniqueIdentifier} from "src/identifiers/unique-identifier"
-import {kebabSpace} from "src/utilities/kebab-space"
-import type {EmptyObject, Jsonifiable, KebabCase} from 'type-fest'
-import {ulid} from "../../identifiers"
-import {ClassSerializationRegistry} from "../transformation/serializer/registry/serialization-class-registry";
+import { Priority } from "src/eips/messages/properties/priority"
+import { Serializable } from "src/eips/transformation/serializer/registry/serializable-property"
+import { UniqueIdentifier } from "src/identifiers/unique-identifier"
+import { kebabSpace } from "src/utilities/kebab-space"
+import type { EmptyObject, Jsonifiable, KebabCase } from 'type-fest'
+import { ulid } from "../../identifiers"
+import { ClassSerializationRegistry } from "../transformation/serializer/registry/serialization-class-registry";
 
 export class MessageUtilities {
   static createMessageName(name: string): KebabCase<string> {
@@ -92,7 +92,7 @@ export type MessagePayload<T extends Jsonifiable = EmptyObject> = Omit<
 export abstract class Message<T extends Jsonifiable = EmptyObject> implements MessageProperties<T> {
   @Serializable()
   public readonly name: KebabCase<Message<any>["constructor"]["name"]> = MessageUtilities.createMessageName(
-      this.constructor.name
+    this.constructor.name
   )
   @Serializable()
   public readonly id: UniqueIdentifier = ulid()
@@ -114,8 +114,8 @@ export abstract class Message<T extends Jsonifiable = EmptyObject> implements Me
   public readonly body: T
 
   protected constructor(
-      message: MessagePayload<T>,
-      type: MessageType = MessageType.DOCUMENT
+    message: MessagePayload<T>,
+    type: MessageType = MessageType.DOCUMENT
   ) {
     this.causationId = message.causationId
     this.correlationId = message.correlationId
@@ -137,12 +137,12 @@ export abstract class Message<T extends Jsonifiable = EmptyObject> implements Me
     Object.assign(this, message)
   }
 
-  static {
-    const name = MessageUtilities.createMessageName(this.constructor.name)
+  // static {
+  //   const name = MessageUtilities.createMessageName(this.constructor.name)
 
-    if (!ClassSerializationRegistry.has(name)) {
-      ClassSerializationRegistry.set(name, this.constructor as any)
-      console.log(`Registered message "${name}"`)
-    }
-  }
+  //   if (!ClassSerializationRegistry.has(name)) {
+  //     ClassSerializationRegistry.set(name, this.constructor as any)
+  //     console.log(`Registered message "${name}"`)
+  //   }
+  // }
 }

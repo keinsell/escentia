@@ -1,5 +1,5 @@
 import * as t from 'io-ts'
-import {IsSequentialID} from './is-sequential-id'
+import { IsSequentialID } from './is-sequential-id'
 
 
 const SequentialIdCodec = t.brand(
@@ -14,7 +14,7 @@ const SequentialIdCodec = t.brand(
  */
 export type SequentialId = t.TypeOf<typeof SequentialIdCodec>
 
-let lastId = 0
+let lastId = 1
 
 /**
  * Sequential ID is a unique identifier assigned to data records in a sequential order, typically incrementing by
