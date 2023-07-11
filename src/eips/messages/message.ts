@@ -4,7 +4,6 @@ import { UniqueIdentifier } from "src/identifiers/unique-identifier"
 import { kebabSpace } from "src/utilities/kebab-space"
 import type { EmptyObject, Jsonifiable, KebabCase } from 'type-fest'
 import { ulid } from "../../identifiers"
-import { ClassSerializationRegistry } from "../transformation/serializer/registry/serialization-class-registry";
 
 export class MessageUtilities {
   static createMessageName(name: string): KebabCase<string> {

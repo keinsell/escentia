@@ -15,6 +15,6 @@ export type Repository2<T extends Model> = {
 
 export abstract class Repository<T extends Model<any, any> | Entity<any, any>> {
   abstract findById(id: T["id"]): Promise<Option<T>>
-  abstract findAll(): Promise<Some<T>>
+  abstract findAll(): Promise<Some<T[]>>
   abstract save(model: T): Promise<T>
 }

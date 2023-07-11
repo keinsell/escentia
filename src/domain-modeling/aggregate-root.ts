@@ -23,4 +23,8 @@ export abstract class AggregateRoot<
     this.incrementVersion()
     this.__events.push(event)
   }
+
+  // TODO: Add apply method that will apply specific event on aggregate
+  // This can be based on decorators on somehow on meta programing using specifc
+  // methods name in aggregate such as "onOrderCreated".
 }
