@@ -1,6 +1,6 @@
 import { T, Val, FnVal } from "./common";
-import { Option } from "./option";
-import { Result } from "./result";
+import { None, Option, Some } from "./option";
+import { Err, Ok, Result } from "./result";
 
 
 type MappedBranches<T, U> =
