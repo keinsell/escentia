@@ -1,7 +1,6 @@
 import { AggregateRoot } from "src/domain-modeling/aggregate-root";
 import { EntityProperties } from "src/domain-modeling/entity";
 import { CUID } from "src/identifiers";
-import { OrderCreated } from "./events/order-created";
 
 export interface OrderProperties {
   customerId: string
@@ -10,7 +9,7 @@ export interface OrderProperties {
   total: number
 }
 
-export class OrderAggregate extends AggregateRoot<CUID, OrderProperties> implements OrderProperties {
+export class Order extends AggregateRoot<CUID, OrderProperties> implements OrderProperties {
   customerId: string;
   productId: string;
   quantity: number;
@@ -25,13 +24,6 @@ export class OrderAggregate extends AggregateRoot<CUID, OrderProperties> impleme
   }
 
   createOrder() {
-    this.addEvent(new OrderCreated({
-      body: {
-        aggregateId: this.id,
-        aggregateVersion: this._version,
-        ...this,
-      }
-    }))
     return this
   }
 }

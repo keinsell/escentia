@@ -1,7 +1,7 @@
 import { User } from "./user";
 import { Option, Some } from "src/utilities/option";
 import { SequentialId } from "src/identifiers";
-import { Repository } from "src/persistance/write-repository";
+import { Repository } from "src";
 
 const USERS: User[] = [];
 

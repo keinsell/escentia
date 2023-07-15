@@ -1,5 +1,6 @@
-import { UserRegistration } from "./user/usecases/user-registration/user-registration";
-import { UserRepository } from "./user/user-repository";
+import { UserRegistration } from "./panda/user/usecases/user-registration/user-registration"
+import { UserRepository } from "./panda/user/user-repository"
+
 
 // Register User
 const userRegistration = new UserRegistration()

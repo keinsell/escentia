@@ -1,8 +1,7 @@
-import {AggregateRoot} from "../../src/domain-modeling/aggregate-root";
-import {EntityProperties} from "../../src/domain-modeling/entity";
-import {CUID} from "../../src/identifiers";
-import {ProductNameChanged} from "./evnets/product-name-changed";
 
+import { CUID } from "src";
+import { AggregateRoot } from "src/domain-modeling/aggregate-root";
+import { EntityProperties } from "src/domain-modeling/entity";
 
 interface ProductProperties {
     name: string
@@ -21,6 +20,5 @@ export class Product extends AggregateRoot<CUID, ProductProperties> implements  
 
     changeName(name: string) {
         this.name = name;
-        this.addEvent(new ProductNameChanged(this))
     }
 }
