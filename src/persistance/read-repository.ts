@@ -1,5 +1,6 @@
-import {Model} from "src/data-modeling/model"
+import { Model } from "src/data-modeling/model"
+import { Some } from "src/utilities/option"
 
 export abstract class ReadRepository<MODEL extends Model> {
-	abstract findById(id: MODEL["id"]): Promise<MODEL | undefined>
+	abstract all(): Promise<Some<MODEL>>
 }

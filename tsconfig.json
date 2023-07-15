@@ -32,7 +32,6 @@
     "inlineSourceMap": false,
     "declaration": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-    "outDir": "dist",
     "baseUrl": ".",
     "ts-node": {
       "swc": true,
